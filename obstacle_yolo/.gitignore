@@ -1,0 +1,14 @@
+# 학습 데이터(AI Hub 변환본)·학습 결과·서비스 실행 결과 — 국외 반출 금지 데이터 포함, git 금지
+outputs/
+service/outputs/
+
+# 모델 가중치는 Drive 묶음으로만 전달
+weights/
+*.pt
+*.onnx
+
+# 개인 작업 지침 (Claude Code용)
+CLAUDE.md
+
+__pycache__/
+*.py[cod]

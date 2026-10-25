@@ -1,0 +1,37 @@
+# RoadPush 장애물 탐지 클래스 (2026-10-22 확정안)
+# 원칙: 처리 경로가 같고, 데이터가 부족하거나 생김새가 비슷하면 합친다
+# 근거 통계: obstacle_yolo/outputs/stats.csv (BBox_10~14, 사진 65,934장, 박스 684,286개)
+status: confirmed   # 2026-10-22 사진 확인(check_before_training) 반영 완료
+
+classes:
+  0_vehicle: [car, truck, bus, motorcycle]           # 처리 유형 C 단속
+  1_construction: [barricade]                        # 처리 유형 D 허가 확인
+  2_debris: [movable_signage, carrier, chair, table] # 처리 유형 B 점유자 계도
+  # movable_signage에는 주차금지 팻말도 포함됨 → 서비스 구현 후 debris 유지 여부 결정 (2026-10-23)
+  3_micromobility: [bicycle, scooter]                # 처리 유형 A 운영사 수거
+
+exclude:   # 박스를 지우고 배경으로 학습 (장애물로 잡지 않게)
+  fixed_facility: [pole, tree_trunk, bollard, traffic_sign, traffic_light,
+                   traffic_light_controller, power_controller, bench,
+                   fire_hydrant, kiosk, parking_meter, stop]
+  person_animal: [person, dog, cat, stroller, wheelchair]
+
+# 이 라벨이 하나라도 있는 사진은 학습 데이터에서 통째로 뺀다 (dataset_v2부터, 2026-10-23)
+#  - potted_plant: 고정 화분(제외 대상)과 이동식 화분(적치물)이 한 라벨로 섞여 있음.
+#    debris로 두면 고정 화분을 장애물로, exclude로 두면 이동식 화분을 배경으로 잘못 배우므로 사진을 뺀다.
+#    이동식 화분은 추후 직접 라벨링해 추가한다.
+drop_images_with: [potted_plant]
+
+check_before_training:      # 학습 전에 사진 10장씩 눈으로 확인 (2026-10-22 완료, 시드 20261022)
+  scooter: "확인 완료: 대부분 전동킥보드, 1장 세그웨이(PM) → 3_micromobility 유지. 한계: 어린이용 킥보드 1장(처리상 적치물)이 섞여 있음"
+  carrier: "확인 완료(10장): 리어카·손수레 8, 마트 쇼핑카트 1, 개인 캐리어 1 → 2_debris 유지. 한계: 끌고 가는 개인 캐리어도 적치물로 잡힐 수 있음"
+  chair:   "확인 완료: 이상 없음(상가 이동식 의자) → 2_debris"
+  potted_plant: "10장 확인 땐 대부분 이동식이었으나, 변환 검증 20장 중 3장(11·14·15)에 고정 화분 → 사진째 제외(drop_images_with)로 변경"
+
+known_label_issues:   # 원본 AI Hub 라벨의 한계 (변환으로 고칠 수 없음, 추가 라벨링 필요)
+  - "볼라드를 movable_signage로 라벨링한 사례 있음 (check 12)"
+  - "먼 거리·겹친 자전거, 천막 덮인 오토바이 등 라벨 누락 (check 13, 20) → 모델이 배경으로 학습, recall 저하 요인"
+  - "상자·봉투·우유 박스·배너 거치대 등 적치물 클래스 자체가 없음 (check 10) → 현재 모델은 탐지 불가"
+  - "라바콘이 movable_signage로 라벨됨 (check_dataset_v2_10k 15, 2026-10-24 diag 확인) → debris로 학습됨.
+     혼동 행렬(yolo11n_dataset_v2_10k): 실제 construction의 14%를 debris로, 실제 debris의 9%를 construction으로 예측.
+     movable_signage = 입간판 + 주차금지 팻말 + 라바콘이 섞인 라벨 → 라벨 이름으로는 분리 불가, 재라벨링 필요"

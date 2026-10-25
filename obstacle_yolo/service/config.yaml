@@ -1,0 +1,39 @@
+# RoadPush 장애물 탐지 서비스 설정
+# 모델을 바꾸거나 임계값을 조정할 때는 이 파일만 고치면 된다 (코드는 그대로)
+
+model:
+  # 현재 기준 모델 (2026-10-25, 실험 ⑥: yolo11s + train 전체 + construction 사진 4배 오버샘플링)
+  #   val mAP50 .774 / mAP50-95 .551
+  # 이전 모델 ④: ...\yolo11s_dataset_v2_10k\weights\best.pt (obstacle_v1_yolo11s_10k, .764 / .526)
+  # 주의: micromobility → vehicle 혼동이 .21 (④는 .12). A(수거)가 C(단속)로 잘못 넘어갈 수 있음
+  # 상대 경로는 obstacle_yolo 폴더 기준. 가중치는 git에 올리지 않고 Drive로 전달한다
+  #   (원본: outputs\runs\yolo11s_dataset_v2_full_os4\weights\best.pt 를 복사)
+  path: weights/obstacle_yolo11s_full_os4.pt
+  sha256: b33b2d7361734d228363b7234ba61d005d411ff466254199f96cc5cd9d394286
+  version: obstacle_v2_yolo11s_full_os4
+  imgsz: 640          # 학습할 때와 같은 크기로 넣어야 성능이 그대로 나온다
+
+# 클래스별 설정
+#  conf: 이 점수 이상인 박스만 "장애물"로 인정 (0~1). 낮추면 더 많이 잡고(놓침↓) 잘못 잡는 것도 늘어난다(오탐↑)
+#  type/action: RoadPush 처리 유형
+classes:
+  vehicle:
+    name_ko: 주정차 차량
+    type: C
+    action: 단속 요청
+    conf: 0.25
+  construction:
+    name_ko: 공사시설
+    type: D
+    action: 도로점용 허가 확인
+    conf: 0.25
+  debris:
+    name_ko: 적치물
+    type: B
+    action: 점유자 계도
+    conf: 0.25
+  micromobility:
+    name_ko: 자전거·PM
+    type: A
+    action: 운영사 수거 요청
+    conf: 0.25

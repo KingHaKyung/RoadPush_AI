@@ -1,0 +1,7 @@
+# 학습·추론에 쓴 버전 (Python 3.12, roadpush-yolo 환경)
+# torch는 GPU 버전을 따로 설치: pip install torch==2.11.0 torchvision==0.26.0 --index-url https://download.pytorch.org/whl/cu128
+ultralytics==8.4.183
+opencv-python==5.0.0.93
+numpy==2.5.2
+Pillow==12.3.0
+PyYAML==6.0.3
