@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "distribution_policy": "weights_are_not_committed_to_git; provide through the controlled Drive bundle after license review",
+  "assets": [
+    {
+      "asset_id": "mask2former_mapillary_swin_large",
+      "runtime_role": "semantic_segmentation",
+      "relative_path": "models/mask2former_swin_large_mapillary",
+      "source": "https://huggingface.co/facebook/mask2former-swin-large-mapillary-vistas-semantic",
+      "upstream_repo_id": "facebook/mask2former-swin-large-mapillary-vistas-semantic",
+      "license_card": "other",
+      "license_action": "review upstream model card and Mapillary Vistas terms before redistribution",
+      "file_count": 10,
+      "bytes": 866049943,
+      "tree_sha256": "8407a806b14d63ba4273adecf2e56ddbcb02473958f2b51fcbc5b8334a82d446"
+    },
+    {
+      "asset_id": "yolo11n_seg",
+      "runtime_role": "conditional_vehicle_instance_segmentation",
+      "relative_path": "models/yolo11n-seg.pt",
+      "source": "Ultralytics yolo11n-seg.pt standard checkpoint; original download receipt is not present in the accepted workspace",
+      "license_action": "confirm the applicable Ultralytics license before redistribution",
+      "bytes": 6182636,
+      "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152"
+    },
+    {
+      "asset_id": "frozen_model_audit_40",
+      "runtime_role": "canonical regression manifest and semantic cache references",
+      "relative_path": "artifacts/model_audit_40/audit_manifest.json",
+      "bytes": 21151,
+      "sha256": "814d6886c489f5a9dc0d06b954b304db6619ed98580303fe0a65f1c682e26890"
+    }
+  ]
+}

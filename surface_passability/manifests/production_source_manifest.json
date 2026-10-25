@@ -1,0 +1,650 @@
+{
+  "schema_version": "1.0",
+  "generated_at_utc": "2026-10-24T04:38:34.627677+00:00",
+  "source_root_label": "RoadPush accepted workspace",
+  "entry_points": [
+    "scripts/walkway_v3/run_phase6_surface_pipeline.py",
+    "scripts/walkway_v3/phase7_b_adapter.py",
+    "scripts/walkway_v3/phase7_b_pipeline.py",
+    "scripts/walkway_v3/run_phase7_b_full160.py",
+    "scripts/walkway_v3/render_phase7_b_v2_full160_dashboard.py"
+  ],
+  "counts": {
+    "static_python": 49,
+    "dynamic_legacy_python": 14,
+    "canonical_artifacts": 16,
+    "documents": 4,
+    "runtime_assets": 3,
+    "missing": 0
+  },
+  "production_python": [
+    {
+      "path": "outputs/walkway_detection_ablation_v2/probe_curb_boundary_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 11442,
+      "sha256": "3050d66e908387914d1b77fc55fde3dfeae44ecfa89d08650874af24f6608407"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_boundary_width_probe_8.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 30498,
+      "sha256": "881c118648b9b48c08effc967fd2c2cfe180c27d1f3cf764dc9746b92734e165"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_class_aware_clearance_probe_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 6656,
+      "sha256": "cf5c967d791d496e08fb2bdbc316d04c19be9388aed8273f897979aa6a682f19"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_direction_line_probe_8.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 17370,
+      "sha256": "abd3e38101ae569363491752fef0565c66bdf825ce62ccb0279e97b82340f897"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_ground_footprint_probe_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 16856,
+      "sha256": "5769209333571921eb580bda28473748a7aca0dbe79a92ee8a02e1f272dd0108"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_outer_boundary_width_probe_8.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 14660,
+      "sha256": "57d05d49aa8e2cde76b57b350e40adc1d79f21da3eb9556dfae4003ccca3ead5"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_policy_aligned_clearance_probe_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 13356,
+      "sha256": "efd6092e7ac01a8fa97e10a53a2d58a90e567a2c655336d5945eefe61d3bec99"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_universal_grounded_footprint_probe_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 30677,
+      "sha256": "154f252940ada81589e22e9ff85d3ef798b6208b32921fa64e131fa54494bb47"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_v2_2a2_rowwise_counterfactual_boundary_completion_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 17175,
+      "sha256": "ac8fcc858551fb3e6e20b83b09e3729ec96236d1fa965d83f615e9285193e843"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_v2_integrated_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 26396,
+      "sha256": "ea6872824a030f5e40f7fc7ce68052d76055066e301ac70fee5c9cf8c4bf20e3"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_v2_pilot_8.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 28584,
+      "sha256": "c080fb4b8e873ef21f9caa6739c56f693188f816b4fcbb22741b64e106428c96"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_vehicle_geometry_split_probe.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 11608,
+      "sha256": "7e667c10acc017f5bd5e219c141fffa51b5ccb0946227b6a8e80a161f3e1fe8a"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_vehicle_yolo_trigger_audit_40.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 12008,
+      "sha256": "07d8c2ff40e5c6b7b640a015a4f566b1342a93575fdb6555d0c089e4b0ff4a4e"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/run_yolo_vehicle_instance_probe.py",
+      "category": "production_python_dynamic_legacy",
+      "exists": true,
+      "bytes": 14987,
+      "sha256": "73d98aea6baa6c1c7b1680b18a2ee25a5dac216ccda07d0683ff80559d57e478"
+    },
+    {
+      "path": "scripts/run_roi_benchmark_inference.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 12626,
+      "sha256": "923eb1b7680a9e43f66cd9465cbde0f0b22be6ed8b52148abd2d0ae20c6b0ba8"
+    },
+    {
+      "path": "scripts/walkway_v3/blockers.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21213,
+      "sha256": "90f3e79133636812ecde8c8d7e17d02af6d8438fc040a33528bafe57b0dc47ac"
+    },
+    {
+      "path": "scripts/walkway_v3/boundaries.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 2708,
+      "sha256": "7f39483494481b25f0238373a6acfd1dd901d97e810fde00f082b469e7c4202d"
+    },
+    {
+      "path": "scripts/walkway_v3/build_phase7_b_focused_review.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 24738,
+      "sha256": "78870ec6dc043fe349980de12954bd51e1cfa240132dcb4a7fadbb482f55608d"
+    },
+    {
+      "path": "scripts/walkway_v3/evaluator.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 16576,
+      "sha256": "9b0fd87f8844024d4fd5c256630c14aca1d30435b106e46bca3a475c083402c3"
+    },
+    {
+      "path": "scripts/walkway_v3/extension_track_s1.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 81456,
+      "sha256": "9b9e672a742b19cff7a4e2d73edbdeab282ccab6e7134ac605f4026f77efef82"
+    },
+    {
+      "path": "scripts/walkway_v3/obstacle_geometry.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 23423,
+      "sha256": "78cf6c097dcdc46434505c23233d5c62371121388fbfff2c2cc803f63b0f5ecb"
+    },
+    {
+      "path": "scripts/walkway_v3/passability.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 25818,
+      "sha256": "fe1f7e2d3de612be77a0141de2d4d766b680de8186d09ad92fe9defc1e7b37fc"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_absolute.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 5750,
+      "sha256": "2964a50679f27eb50cd72341d437175f930e50cbf699e7eb5d9667f2561db861"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_adapter.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 15981,
+      "sha256": "2c32cb8b867941fb6c7a3e9b1396606f48f4b51c5284f1cffff58768a5b9c292"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_corridors.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 10928,
+      "sha256": "4543143a1425e0a301f45b1827acd6f18184897230899e1e22116f9c0d48d0e9"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_metrics.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 16713,
+      "sha256": "84cae956d834d887164365b8e63d4ad1ae606ccf011ea5fff7c7a4b0efad777a"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_occupancy.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 15108,
+      "sha256": "ea765db2dc909c76805a26a721feb62197f7e5c55e6f705a739c41415b7808f4"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_pipeline.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 13190,
+      "sha256": "90a47e02eb63ab7a588f60296d237897a1cad286a4a09ba26516e36f377baf3f"
+    },
+    {
+      "path": "scripts/walkway_v3/phase7_b_rows.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 12606,
+      "sha256": "f8bdcae3ac3fdd8b722b23591f44f3bc110af79d920b65257727e8d25cbabb50"
+    },
+    {
+      "path": "scripts/walkway_v3/preprocessing.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 1764,
+      "sha256": "541f1e3ff2ab558703c309e5cdfb6f5be93b34aabc1275afa1619c7ad25726ff"
+    },
+    {
+      "path": "scripts/walkway_v3/render_phase7_b_v2_full160_dashboard.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 10126,
+      "sha256": "dc00402eeda9e7dc238ce3410486d46253c2492d527fa930c4592a86d83e5c01"
+    },
+    {
+      "path": "scripts/walkway_v3/road_context.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 8336,
+      "sha256": "d755a5f7087c8f5a19944cc6b740bfebd71a678be5610df138c6ccfd6f5ee665"
+    },
+    {
+      "path": "scripts/walkway_v3/road_context_enhanced.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 6129,
+      "sha256": "9047aa36e39f8d94deb1d78efd80806ea6ce62fac84f56b59cb928725e2ddd36"
+    },
+    {
+      "path": "scripts/walkway_v3/road_linear_drain.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21307,
+      "sha256": "b6c9d3550bc62d0f5a019db0cd3cc46f08d25ba2d33f169fd078a1790622998a"
+    },
+    {
+      "path": "scripts/walkway_v3/road_ownership.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21871,
+      "sha256": "ec9634cfe17a6c3f5aa4e033939262d366df781cd30328a0ca4ab2625a33225f"
+    },
+    {
+      "path": "scripts/walkway_v3/road_pipeline.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 14402,
+      "sha256": "1460d30a2856f68916f178a7091b67e2aaa53dd0551466a43cc3c07b76ab062b"
+    },
+    {
+      "path": "scripts/walkway_v3/row_evaluator.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 1906,
+      "sha256": "81e665b39af07567eaf41cdd4eb919d69252d41e86fe77a0b9ceb5b007ef8e11"
+    },
+    {
+      "path": "scripts/walkway_v3/run_phase6_surface_pipeline.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 20993,
+      "sha256": "d3e3994cad39f033623ed4bcdb3b4668411046e607da239006a941d97105017f"
+    },
+    {
+      "path": "scripts/walkway_v3/run_phase7_b_full160.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 11351,
+      "sha256": "ec63d53157b574a5ddc34932b9d165b29c4ab756b728a8141bfd1da23d60978b"
+    },
+    {
+      "path": "scripts/walkway_v3/run_phase7_extension_track_s1_targeted.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 46268,
+      "sha256": "07ece732d68dd4c6833d1e544db4dc52df5bdddd3e27c176384cf4d7633f9b13"
+    },
+    {
+      "path": "scripts/walkway_v3/run_phase7_extension_track_s1a.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21239,
+      "sha256": "28016bbe1ce7a027abca7ecddf9ea19a92c30d6420ff2e42d6846f2f2f959f0c"
+    },
+    {
+      "path": "scripts/walkway_v3/run_phase7_trapezoid_boundary_retry_v1.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 9761,
+      "sha256": "980d562fb80aa7da1f84a1d2a339830ce3e24ace308e582c24b79f90d5f94ba1"
+    },
+    {
+      "path": "scripts/walkway_v3/semantic_inputs.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 2776,
+      "sha256": "321092eb697565444e840c863244d928801738e789f6d57684fc560fbba2813a"
+    },
+    {
+      "path": "scripts/walkway_v3/sparse_row_span_support.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 5172,
+      "sha256": "169d7a9589d56d93fab70d68993ce777333de09607341808cc7007a45512ebaf"
+    },
+    {
+      "path": "scripts/walkway_v3/structural_routes.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 11784,
+      "sha256": "6fbd9b079ac05622ef67d6c6f6c8f1c7b3fb4f1ebf13396aa52efc380989368c"
+    },
+    {
+      "path": "scripts/walkway_v3/suite.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 34645,
+      "sha256": "44e0302c1b67570b2c7d30959d819ca6518da640bae6cf92fdae35445d71800e"
+    },
+    {
+      "path": "scripts/walkway_v3/surface_artifacts.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 5227,
+      "sha256": "cc390fe4d32d67990c81b804dc2e85b4bb92c992ff883e9f9aba10f18f557c4a"
+    },
+    {
+      "path": "scripts/walkway_v3/surface_components.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 8828,
+      "sha256": "a6d90ef1c9bb24a678db2b35e2bb9ab0db7a905c70ec6a299079ec2ea45409ea"
+    },
+    {
+      "path": "scripts/walkway_v3/surface_context.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 4190,
+      "sha256": "70bfa3fb3334e4dd6c8253122241f317b3d31276271f34957ae3d30bff9f7f16"
+    },
+    {
+      "path": "scripts/walkway_v3/surface_pipeline.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 10877,
+      "sha256": "cec8e32155721f82b6b127e5247392845a8b9557ca63201b636db35b5f213402"
+    },
+    {
+      "path": "scripts/walkway_v3/surface_selector.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 17600,
+      "sha256": "fa2c42c2bac62219caf277f227b50465c9a505cffb8068fcba9b44ffc5458af8"
+    },
+    {
+      "path": "scripts/walkway_v3/test4_baseline_contract.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 743,
+      "sha256": "80e575ba1e187bfacfd76252ffadc548ac94312cde90a48cd2ce9c7e4dd834ed"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v1.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21434,
+      "sha256": "e2b881b50479eb7eb4b76c078d6d68116478da6c007a8b3a838db706fa12bbdc"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v2.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 16860,
+      "sha256": "cd37cd2e74173e87e77b5944f657a6221a3ed9c7b50a5d83711350d84e802b32"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v4.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 21909,
+      "sha256": "573ee4796a1e667a9fd773dd9041785bc3b0ef6eecefe40afbad598af7e768f2"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 542,
+      "sha256": "09296ce53f152679e88fe5511ab2d1034373cd3e335af1b1ba687e3e86221cea"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_global_support.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 9634,
+      "sha256": "01efa86ce81e7eb292e00529694455ce4733af2edd8882294f2469e35b4fd49f"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_probe_b.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 13239,
+      "sha256": "78b9d6b5ac55a8e506894aafa9fc25c956422c5648d875f02394d033386084ea"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_probe_b_runwise.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 14883,
+      "sha256": "b5d05227c2ee33aca463a831a7763b0025b95d2cbce2bd6cfef998aadd25d5c4"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_probe_c.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 26462,
+      "sha256": "f3c2bd143528f39b6b3cbcc5a0da59ac90f679b079324e6d0afcdce3c5c8cdfb"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_probe_g.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 17753,
+      "sha256": "6e55c3d0f43d198377161c0719d4876dbf900328fb5e76f20decf5c157f4c15e"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v5_probe_v.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 8689,
+      "sha256": "14f78bf8b2a7ae7fb4253115440a136c4ccf950b6c20fc7045f50df694d63d9a"
+    },
+    {
+      "path": "scripts/walkway_v3/trapezoid_boundary_retry_v6.py",
+      "category": "production_python_static",
+      "exists": true,
+      "bytes": 4839,
+      "sha256": "bccca7c30570bbe2dba7868461c306b4b79c32b6aaa50d77539e05dbf7c322b7"
+    }
+  ],
+  "canonical_artifacts": [
+    {
+      "path": "outputs/surface_generalization/phase1_sidewalk_context_regression_40_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 444,
+      "bytes": 170846387,
+      "tree_sha256": "2d81376581fb0c3da25f2be97f9c1fa6f279a6a44d660d0a9f7335fc9328df0c"
+    },
+    {
+      "path": "outputs/surface_generalization/phase2_obstacle_geometry_ownership_regression_40_v3",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 445,
+      "bytes": 170865411,
+      "tree_sha256": "ce7e66c8102fefbdf7d84da1271fc016d4c5c0fc904f4ec8c342c0e738d462d6"
+    },
+    {
+      "path": "outputs/surface_generalization/phase3_road_context_enhanced_40_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 1328,
+      "bytes": 368262302,
+      "tree_sha256": "6da9b0ae3dcbe5ca307d2338ef9f4df06a3dcd3279602a28501371d898e312a0"
+    },
+    {
+      "path": "outputs/surface_generalization/phase3_road_context_enhanced_alley_core40_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 1327,
+      "bytes": 321690784,
+      "tree_sha256": "3c8d8381a8161f24ee06a21c6d7c422ac0a712270c9a1bec4392e0d5a4817f77"
+    },
+    {
+      "path": "outputs/surface_generalization/phase5_sparse_support_integration_regression_v5",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 2,
+      "bytes": 4266,
+      "tree_sha256": "c57ee3e63a59c7eab52906d27133cf4ea2b841472fd88358adad3b070f3b96ce"
+    },
+    {
+      "path": "outputs/surface_generalization/phase6_production_selector_canonical40_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 1245,
+      "bytes": 4738574,
+      "tree_sha256": "354be9b8e40895d97ed3898e6255eb67d166c27269302c73c72289c792a455b2"
+    },
+    {
+      "path": "outputs/surface_generalization/phase6_production_selector_alley_core40_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 1245,
+      "bytes": 4172808,
+      "tree_sha256": "1079da28f966c0fc4fbe4effc137d734dad216d94dcc4f491021d6c0ddf00c8b"
+    },
+    {
+      "path": "outputs/surface_generalization/phase6_production_selector_expansion_challenge80_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 2485,
+      "bytes": 7908433,
+      "tree_sha256": "62512cd842d34a70c4fdb3fd1463b55e9ef9cdeef6e466a5ca72076b143436b6"
+    },
+    {
+      "path": "outputs/surface_generalization/phase6_image_upload_selector_160_v2/review.html",
+      "category": "canonical_artifact",
+      "exists": true,
+      "bytes": 14456,
+      "sha256": "4cb748c1ff15324a318c251b2e2cff42992bc44e7102dbd49164594b4ac11ed5"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_extension_track_s1_full160_v4_probe_final",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 3,
+      "bytes": 3527605,
+      "tree_sha256": "b42a8c8a1f11ac7006519241144954729d7854d5bfb493a67f2d969057ea62ca"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_v5_probe_v_grounded_vegetation_160_v1",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 1975,
+      "bytes": 74237520,
+      "tree_sha256": "bfa94efe82c81a47eabf2c34d606877be613722f4394ec104407e8a7d0b72ab2"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_targeted_runtime_probe_v2",
+      "category": "canonical_artifact",
+      "exists": true,
+      "file_count": 116,
+      "bytes": 384397,
+      "tree_sha256": "6cc1778bcc3ee1a78ffc56c95b0df076ad1dcd2b57a5a3fd73d7cd945d87099d"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_b_full160_v2_provisional_final/results.json",
+      "category": "canonical_artifact",
+      "exists": true,
+      "bytes": 5155669,
+      "sha256": "4bc9c4071eee1a2ba02398194597a61f291d90eaed65f609f9929a1d745e96ea"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_b_full160_v2_provisional_final/ambiguous_review.html",
+      "category": "canonical_artifact",
+      "exists": true,
+      "bytes": 4636,
+      "sha256": "d2840bab2a4c4991fe553d87981ab002671548bdb180d58215477f69599c617f"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_b_full160_v2_final_dashboard/results.json",
+      "category": "canonical_artifact",
+      "exists": true,
+      "bytes": 5155669,
+      "sha256": "85aabe66acbd5396e3dd35c645ed203aad7cc9474db7ff83c9a22556418ab8cd"
+    },
+    {
+      "path": "outputs/surface_generalization/phase7_b_full160_v2_final_dashboard/review.html",
+      "category": "canonical_artifact",
+      "exists": true,
+      "bytes": 43737,
+      "sha256": "1ec2d6f2c6999bb63b7b32e2885a9eba6ab928fe41cade7d581085d7e8c2b3c8"
+    }
+  ],
+  "documents": [
+    {
+      "path": "surface_generalization/PHASE7_A_SURFACE_BOUNDARY_FINAL_REPORT.md",
+      "category": "source_document",
+      "exists": true,
+      "bytes": 4903,
+      "sha256": "69bca422d650d15aa075e275c92334c4039ccac3194274522f91672398f24ae1"
+    },
+    {
+      "path": "surface_generalization/PHASE7_B_PASSABILITY_DESIGN.md",
+      "category": "source_document",
+      "exists": true,
+      "bytes": 13650,
+      "sha256": "739d6b39d891680e7daf91697b59c05d6df2ea7aa1942a4b168287a2501435f5"
+    },
+    {
+      "path": "surface_generalization/PHASE7_B_IMPLEMENTATION_WORKFLOW.md",
+      "category": "source_document",
+      "exists": true,
+      "bytes": 10626,
+      "sha256": "c895de796f48aee16bc9e5c5974cb22688a7621c3120862544137aea605de5b1"
+    },
+    {
+      "path": "surface_generalization/PHASE7_B_PASSABILITY_FINAL_REPORT.md",
+      "category": "source_document",
+      "exists": true,
+      "bytes": 11414,
+      "sha256": "1d15407e93f6ba25867e9e8abb80cced8f35e6bd3edd7e17e00a8e54a409a89e"
+    }
+  ],
+  "runtime_assets": [
+    {
+      "path": "models/mask2former_swin_large_mapillary",
+      "category": "runtime_asset",
+      "exists": true,
+      "file_count": 10,
+      "bytes": 866049943,
+      "tree_sha256": "8407a806b14d63ba4273adecf2e56ddbcb02473958f2b51fcbc5b8334a82d446"
+    },
+    {
+      "path": "models/yolo11n-seg.pt",
+      "category": "runtime_asset",
+      "exists": true,
+      "bytes": 6182636,
+      "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152"
+    },
+    {
+      "path": "outputs/walkway_detection_ablation_v2/model_audit_40/audit_manifest.json",
+      "category": "runtime_asset",
+      "exists": true,
+      "bytes": 21151,
+      "sha256": "814d6886c489f5a9dc0d06b954b304db6619ed98580303fe0a65f1c682e26890"
+    }
+  ],
+  "missing": [],
+  "known_migration_risks": [
+    "dynamic legacy Python under outputs must be promoted before historical outputs are excluded",
+    "accepted JSON contains absolute source paths and requires relocation-safe resolution",
+    "Phase 7-B reconstructs and verifies Phase 7-A rather than consuming a standalone polygon",
+    "canonical 160 images are split across more than one source set",
+    "review font selection is Windows-specific and must not affect numeric output"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "sample_id": "IMG_4282",
+  "semantic_cache_reused": true,
+  "rendering_skipped": true,
+  "mismatch_count": 0,
+  "exact_file_hash_matches": {
+    "pipeline_manifest.json": "EDD83D0B52011AB6A201F8B9A59455D4F30A800C39AA0EBC7809C20E8279EB65",
+    "results.json": "63C955AA2AB1723BFBB0418ABFBBD2CDEB83F6A11C3E7D1ECBEDB50CCFDCE569",
+    "sidewalk_results.json": "FECA3526175692017B2678E9213E6B8B9219295FC7746B4D7AD6BE6FA8128060",
+    "sidewalk_summary.json": "41662912C6997D6F74E5DCAC39D737AD3CD96EC28E4D43A1FCC92FDB1E4A6CC1",
+    "summary.json": "61568D1FF392F35BDFF484A899F7D508B8BC05EA8E358C4B2D3D8950D5E978E4"
+  },
+  "note": "This is an import/path-refactor smoke proof. Full-160 production-result parity is separately recorded in stage3_phase7b_parity.json."
+}

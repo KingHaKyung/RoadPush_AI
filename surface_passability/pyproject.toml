@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roadpush-ai"
+version = "0.1.0"
+description = "RoadPush surface boundary and connected passability analysis"
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+license = { text = "Proprietary" }
+
+[project.scripts]
+roadpush-phase6 = "roadpush_ai.phase6.runner:main"
+roadpush-phase7a = "roadpush_ai.phase7a.validation_policy:main"
+roadpush-phase7b = "roadpush_ai.phase7b.batch_runner:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
