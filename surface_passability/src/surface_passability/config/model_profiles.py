@@ -82,7 +82,7 @@ def verify_mask2former_mapillary_model(
     if len(config.get("id2label", {})) != identity.class_count:
         raise ValueError("semantic class count mismatch")
 
-    tree_hash = tree_sha256(root)
+    tree_hash = tree_sha256(root, known_hashes=required)
     if tree_hash != identity.model_tree_sha256:
         raise ValueError(
             "semantic model tree identity mismatch: "
@@ -135,7 +135,11 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def tree_sha256(root: Path) -> str:
+def tree_sha256(
+    root: Path,
+    *,
+    known_hashes: dict[str, str] | None = None,
+) -> str:
     files = sorted(path for path in root.rglob("*") if path.is_file())
     digest = hashlib.sha256()
     for path in files:
@@ -144,7 +148,12 @@ def tree_sha256(root: Path) -> str:
         digest.update(b"\0")
         digest.update(str(path.stat().st_size).encode("ascii"))
         digest.update(b"\0")
-        digest.update(file_sha256(path).encode("ascii"))
+        file_hash = (
+            known_hashes.get(relative)
+            if known_hashes is not None
+            else None
+        )
+        digest.update((file_hash or file_sha256(path)).encode("ascii"))
         digest.update(b"\n")
     return digest.hexdigest()
 

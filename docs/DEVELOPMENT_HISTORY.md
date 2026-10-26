@@ -281,7 +281,7 @@ AST만 삭제 근거로 사용하지 않고 runtime import trace와 단계별 pa
 |---|---|
 | canonical 40 | mismatch 0, normalized SHA-256 `f3a4ca6681854160077878e51bd6e21898799d3d7c6cdeae1146045ab8824a62` |
 | 전체 160 | mismatch 0, normalized SHA-256 `2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb` |
-| production import graph | 121 Python 파일, 내부 import 344, cycle 0 |
+| production import graph | 122 Python 파일, cycle 0 |
 | legacy/runtime 경계 | `roadpush_ai`, tests, experiments, 절대 `D:` import/reference 0 |
 | active characterization | 179개 파일, 1,735 test 수집; full run 1,729 pass·5 harness/environment 재검증 대상·1 skip, 대상 5/5 재검증 pass |
 | retired dead-path characterization | 17개 파일, 삭제하지 않고 bundle에 보존 |
@@ -291,7 +291,47 @@ AST만 삭제 근거로 사용하지 않고 runtime import trace와 단계별 pa
 리팩터링 중 알고리즘과 확정 threshold는 변경하지 않았다. 비교 실패가 생겼을
 때 comparator를 느슨하게 하지 않고 source geometry와 계약 차이를 수정했다.
 
-## 11. 증거 위치
+## 11. 운영 성능·메모리 최적화 감사
+
+리팩터링 완료 후 실제 160장 cold run에서 GPU VRAM이 9GB를 넘고 CPU 후처리가
+추론보다 오래 걸리는 문제를 별도 감사했다. 원인은 모델 입력이 아니라 semantic
+후처리와 반복 계산이었다.
+
+- Mask2Former 입력은 이미 384×384였지만, 기존 후처리는 65개 class 확률을
+  5712×4284 같은 원본 크기로 GPU에서 동시에 보간했다. 이 tensor만 약 5.9GiB였고
+  장비 관측 peak는 9.30GB였다.
+- surface 후보 생성은 동일 mask의 weighted route를 한 요청에서 반복 계산했다.
+- Phase 7A tail 사례는 같은 점 집합에 robust line fit을 반복하고, 더 나은 후보가
+  될 수 없는 경우에도 `median`을 계산했다.
+- 기본 진입점은 장기 실행 worker에서도 dependency와 모델 asset 검증을 반복할
+  수 있었고, 826MiB semantic weight hash도 한 초기화에서 두 번 읽었다.
+
+채택한 개선은 class 4개 단위 memory-bounded native interpolation, 요청 범위 exact
+route/line-fit cache, 후보 수가 현재 best보다 적을 때의 안전한 median 생략,
+모델 hash 재사용, predict lock, 장기 실행 `SurfacePassabilityAnalyzer`다. threshold,
+mask 정책, 선택 규칙과 결과 schema는 바꾸지 않았다.
+
+최초의 마스크 동일 fast path는 최종 Phase 7B는 유지했지만 5장의 Phase 6 진단
+수치를 바꿨다. behavior-neutral 원칙에 따라 이 최적화는 폐기했다. 수정 후 CPU는
+과거 CPU의 semantic·surface selection·Phase 7A·Phase 7B raw JSON과 160/160
+동일했고, GPU도 과거 GPU raw JSON과 160/160 동일했다. CPU와 GPU의 기존
+semantic 수치 차이는 승인된 provenance normalization 뒤 최종 Phase 7B에서
+160/160 동일하다.
+
+| 지표 | 최적화 전 | 최적화 후 |
+|---|---:|---:|
+| CPU wall / 평균 | 847.18초 / 5.24초 | 548.24초 / 3.39초 |
+| GPU wall / 평균 | 674.69초 / 4.18초 | 378.79초 / 2.34초 |
+| GPU peak VRAM | 9.30GB | 3.10GB |
+| GPU peak RSS | 2.39GB | 1.98GB |
+| GPU Phase 7A·7B 평균 | 0.555초 | 0.143초 |
+
+최종 보강 검사는 112 pass·1 권한 의존 symlink 검사 제외, production compile
+성공, CPU/GPU cold-cache 각각 실제 semantic 추론 160회와 cache hit 0회를
+확인했다. 수치 evidence는 로컬 runtime 기록에 두며 Git production에는 넣지
+않는다.
+
+## 12. 증거 위치
 
 Git에 포함하지 않는 validation bundle의 기본 위치는 다음과 같다.
 
@@ -312,7 +352,7 @@ Phase별 원본 결과, 전체 160장 HTML과 대표 이미지는 같은
 `IMG_4282`, `IMG_4508`이 포함된다. 파일을 Git production 문서에 중복 복사하지
 않는 이유는 모델 코드와 재현용 대용량 증거의 배포 수명주기가 다르기 때문이다.
 
-## 12. 확정 결정과 향후 작업
+## 13. 확정 결정과 향후 작업
 
 확정된 결정은 다음과 같다.
 

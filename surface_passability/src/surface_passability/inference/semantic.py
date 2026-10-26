@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+from threading import Lock
 import time
 from typing import Any
 
@@ -48,8 +49,17 @@ class Mask2FormerSemanticModel:
             .eval()
             .to(self.device)
         )
+        self._predict_lock = Lock()
 
     def predict(self, image: Image.Image) -> tuple[np.ndarray, dict[str, Any]]:
+        """Infer one native class map with bounded post-processing memory."""
+
+        with self._predict_lock:
+            return self._predict_locked(image)
+
+    def _predict_locked(
+        self, image: Image.Image
+    ) -> tuple[np.ndarray, dict[str, Any]]:
         width, height = image.size
         started = time.perf_counter()
         with self.torch.inference_mode():
@@ -60,15 +70,12 @@ class Mask2FormerSemanticModel:
                 for name, value in inputs.items()
             }
             output = self.model(**inputs)
-            raw = (
-                self.processor.post_process_semantic_segmentation(
-                    output, target_sizes=[(height, width)]
-                )[0]
-                .detach()
-                .cpu()
-                .numpy()
-                .astype(np.uint8)
+            raw = _memory_bounded_semantic_map(
+                self.torch,
+                output,
+                target_size=(height, width),
             )
+            del output, inputs
         if self.device.type == "cuda":
             self.torch.cuda.synchronize()
             peak = int(self.torch.cuda.max_memory_allocated())
@@ -83,4 +90,72 @@ class Mask2FormerSemanticModel:
             "torch_version": self.torch.__version__,
             "transformers_version": self.transformers_version,
         }
+
+
+SEMANTIC_CLASS_CHUNK_SIZE = 4
+MASK2FORMER_PREPROCESSED_SIZE = (384, 384)
+
+
+def _memory_bounded_semantic_map(
+    torch: Any,
+    output: Any,
+    *,
+    target_size: tuple[int, int],
+    class_chunk_size: int = SEMANTIC_CLASS_CHUNK_SIZE,
+) -> np.ndarray:
+    """Reproduce the accepted HF native argmax without a full native tensor.
+
+    Hugging Face first forms 65 class logits at 384x384, then bilinearly
+    expands all classes to native resolution before ``argmax``.  Expanding all
+    channels together needs almost 6 GiB for a 5712x4284 image.  Interpolation
+    is channel-independent, so processing ordered class chunks and updating on
+    strict improvement preserves the exact lowest-class-id tie behavior.
+    """
+
+    if class_chunk_size < 1:
+        raise ValueError("class_chunk_size must be positive")
+    class_queries_logits = output.class_queries_logits
+    masks_queries_logits = torch.nn.functional.interpolate(
+        output.masks_queries_logits,
+        size=MASK2FORMER_PREPROCESSED_SIZE,
+        mode="bilinear",
+        align_corners=False,
+    )
+    masks_classes = class_queries_logits.softmax(dim=-1)[..., :-1]
+    masks_probs = masks_queries_logits.sigmoid()
+    segmentation = torch.einsum(
+        "bqc,bqhw->bchw", masks_classes, masks_probs
+    )
+    if int(segmentation.shape[0]) != 1:
+        raise ValueError("single-image semantic inference requires batch size 1")
+    segmentation = segmentation[0]
+    height, width = target_size
+    best_values = torch.full(
+        (height, width),
+        -torch.inf,
+        dtype=segmentation.dtype,
+        device=segmentation.device,
+    )
+    best_classes = torch.zeros(
+        (height, width),
+        dtype=torch.uint8,
+        device=segmentation.device,
+    )
+    for start in range(0, int(segmentation.shape[0]), class_chunk_size):
+        stop = min(start + class_chunk_size, int(segmentation.shape[0]))
+        resized = torch.nn.functional.interpolate(
+            segmentation[start:stop].unsqueeze(0),
+            size=target_size,
+            mode="bilinear",
+            align_corners=False,
+        )[0]
+        values, offsets = resized.max(dim=0)
+        update = values > best_values
+        best_values[update] = values[update]
+        best_classes[update] = (offsets[update] + start).to(torch.uint8)
+        del resized, values, offsets, update
+    result = best_classes.cpu().numpy()
+    del best_classes, best_values, segmentation, masks_probs
+    del masks_classes, masks_queries_logits, class_queries_logits
+    return result
 

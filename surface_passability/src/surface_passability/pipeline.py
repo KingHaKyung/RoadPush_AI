@@ -17,6 +17,7 @@ from surface_passability.contracts.analysis import (
 from surface_passability.contracts.request import AnalysisRequest
 from surface_passability.contracts.response import AnalysisResponse
 from surface_passability.boundary.pipeline import analyze_surface_boundary
+from surface_passability.boundary.line_fitting import request_robust_fit_cache
 from surface_passability.passability.authority import build_passability_handoff
 from surface_passability.passability.occupancy import build_measurement_occupancy
 from surface_passability.passability.pipeline import compose_passability_result
@@ -42,7 +43,7 @@ from surface_passability.contracts.surfaces import (
 from surface_passability.inference.vehicle_instances import VehicleModelProvider
 from surface_passability.dependencies import (
     PipelineDependencies,
-    create_default_dependencies,
+    get_default_dependencies,
 )
 from surface_passability.imaging.preparation import prepare_image
 from surface_passability.obstacles.evidence import (
@@ -70,6 +71,7 @@ from surface_passability.surfaces.sidewalk import (
     evaluate_sidewalk_structural_rows,
     prepare_sidewalk_structural_stages,
 )
+from surface_passability.surfaces.routes import request_route_cache
 
 
 def _analyze_surface_obstacles(
@@ -334,16 +336,17 @@ def analyze_selected_surface(
         raw_structural = candidate.raw_structural_mask
         passability_instances = candidate.passability_instances
 
-    boundary = analyze_surface_boundary(
-        request.sample_id,
-        selection.decision.selected_surface,
-        selection.decision.state,
-        structural,
-        blocker,
-        semantic.class_map,
-        obstacle_silhouette_mask=silhouette,
-        raw_structural_mask=raw_structural,
-    )
+    with request_robust_fit_cache():
+        boundary = analyze_surface_boundary(
+            request.sample_id,
+            selection.decision.selected_surface,
+            selection.decision.state,
+            structural,
+            blocker,
+            semantic.class_map,
+            obstacle_silhouette_mask=silhouette,
+            raw_structural_mask=raw_structural,
+        )
     handoff = build_passability_handoff(
         boundary,
         provenance={
@@ -388,7 +391,7 @@ def analyze_photo(
 ) -> AnalysisResponse:
     """Run the complete artifact-free production pipeline for one photo."""
 
-    dependencies = dependencies or create_default_dependencies()
+    dependencies = dependencies or get_default_dependencies()
     timings: dict[str, float] = {}
     started = _read_pipeline_clock(dependencies)
 
@@ -401,12 +404,13 @@ def analyze_photo(
     checkpoint = _read_pipeline_clock(dependencies, previous=previous)
     timings["semantic_inference"] = checkpoint - previous
 
-    candidates = build_surface_candidates(
-        prepared.rgb,
-        semantic,
-        dependencies.class_names,
-        dependencies.vehicle_model_provider,
-    )
+    with request_route_cache():
+        candidates = build_surface_candidates(
+            prepared.rgb,
+            semantic,
+            dependencies.class_names,
+            dependencies.vehicle_model_provider,
+        )
     previous = checkpoint
     checkpoint = _read_pipeline_clock(dependencies, previous=previous)
     timings["surface_candidates"] = checkpoint - previous

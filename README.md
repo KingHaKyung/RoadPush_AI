@@ -44,6 +44,19 @@ response = analyze_photo(request)
 payload = response.to_dict()
 ```
 
+백엔드처럼 같은 worker에서 여러 사진을 처리할 때는 검증된 모델과 provider를
+재사용하는 장기 실행 진입점을 권장합니다.
+
+```python
+from surface_passability import SurfacePassabilityAnalyzer
+
+analyzer = SurfacePassabilityAnalyzer(requested_device="cuda")
+response = analyzer.analyze_photo(request)
+```
+
+`SurfacePassabilityAnalyzer`는 모델·cache provider와 추론 lock을 worker 수명 동안
+재사용합니다. 요청마다 새 analyzer를 만들지 않습니다.
+
 ## 설치
 
 지원 Python은 64-bit CPython 3.12입니다. 저장소 루트에서 `setup.bat`를
@@ -108,6 +121,8 @@ artifact로 덮어쓰는 phase별 CLI와 renderer는 production에 포함하지 
 - production에서 기존 `roadpush_ai`, tests, experiments, 절대 `D:` 경로
   import/reference 0
 - 리팩터링 중 알고리즘, 임계값, 결과 계약 변경 없음
+- RTX 5070 Ti Laptop 기준 전체 160장 GPU cold run은 최종값 160/160 일치,
+  평균 2.34초/장, peak VRAM 3.10GB로 검증
 
 공식 조직 저장소 반영과 배포는 최종 사용자 승인 뒤에만 수행합니다.
 

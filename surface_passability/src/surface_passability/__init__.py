@@ -5,6 +5,7 @@ from __future__ import annotations
 from surface_passability.contracts.request import AnalysisRequest, InputProfile
 from surface_passability.contracts.response import AnalysisResponse
 from surface_passability.dependencies import PipelineDependencies
+from surface_passability.analyzer import SurfacePassabilityAnalyzer
 
 
 def analyze_photo(
@@ -23,6 +24,7 @@ __all__ = [
     "AnalysisResponse",
     "InputProfile",
     "PipelineDependencies",
+    "SurfacePassabilityAnalyzer",
     "analyze_photo",
 ]
 

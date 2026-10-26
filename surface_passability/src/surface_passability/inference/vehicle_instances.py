@@ -51,6 +51,7 @@ class UltralyticsVehicleModelProvider:
     def __init__(self, weights_path: Path) -> None:
         self.weights_path = weights_path.resolve()
         self._model: VehicleSegmentationModel | None = None
+        self._synchronized_model: VehicleSegmentationModel | None = None
         self._model_lock = Lock()
 
     def get_model(self) -> VehicleSegmentationModel:
@@ -60,7 +61,27 @@ class UltralyticsVehicleModelProvider:
                     from ultralytics import YOLO
 
                     self._model = YOLO(str(self.weights_path))
-        return self._model
+                    self._synchronized_model = _SynchronizedVehicleModel(
+                        self._model
+                    )
+        assert self._synchronized_model is not None
+        return self._synchronized_model
+
+
+class _SynchronizedVehicleModel:
+    """Serialize calls into one reusable Ultralytics model instance."""
+
+    def __init__(self, model: VehicleSegmentationModel) -> None:
+        self._model = model
+        self._predict_lock = Lock()
+
+    @property
+    def names(self) -> Mapping[int, str]:
+        return self._model.names
+
+    def predict(self, image: np.ndarray, **kwargs: object) -> Sequence[Any]:
+        with self._predict_lock:
+            return self._model.predict(image, **kwargs)
 
 
 def rasterize_instance_polygon(

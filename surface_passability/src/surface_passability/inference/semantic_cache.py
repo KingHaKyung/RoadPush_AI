@@ -106,6 +106,7 @@ class SemanticEvidenceProvider:
         if cache_hit:
             native, cache_file_hash = _read_native_map(destination)
             _validate_native_shape(native, prepared)
+            native_array_hash = array_sha256(native)
             if frozen_digest is not None and cache_file_hash != frozen_digest:
                 raise SemanticCacheValidationError(
                     "frozen semantic cache hash mismatch: "
@@ -120,7 +121,7 @@ class SemanticEvidenceProvider:
                         model=self.model_identity,
                         cache_key=cache_key,
                         cache_file_sha256=cache_file_hash,
-                        native_array_sha256=array_sha256(native),
+                        native_array_sha256=native_array_hash,
                     )
                 elif frozen_digest is not None:
                     _validate_frozen_metadata(
@@ -151,6 +152,7 @@ class SemanticEvidenceProvider:
             )
             native = np.asarray(native, dtype=np.uint8)
             _validate_native_shape(native, prepared)
+            native_array_hash = array_sha256(native)
             producer_provenance = _normalize_producer_provenance(
                 inference_metadata,
                 requested_device=self.requested_device,
@@ -163,7 +165,7 @@ class SemanticEvidenceProvider:
                 model=self.model_identity,
                 cache_key=cache_key,
                 cache_file_sha256=cache_file_hash,
-                native=native,
+                native_array_sha256=native_array_hash,
                 producer_provenance=producer_provenance,
             )
             _atomic_write_json(metadata_path, metadata)
@@ -175,7 +177,7 @@ class SemanticEvidenceProvider:
             class_map=analysis,
             native_size=prepared.original_size,
             analysis_size=prepared.analysis_size,
-            native_array_sha256=array_sha256(native),
+            native_array_sha256=native_array_hash,
             analysis_array_sha256=array_sha256(analysis),
             cache_key=cache_key,
             cache_path=destination,
@@ -244,7 +246,7 @@ def array_sha256(array: np.ndarray) -> str:
     digest.update(b"\0")
     digest.update(json.dumps(list(contiguous.shape)).encode("ascii"))
     digest.update(b"\0")
-    digest.update(contiguous.tobytes())
+    digest.update(memoryview(contiguous).cast("B"))
     return digest.hexdigest()
 
 
@@ -279,7 +281,7 @@ def _metadata(
     model: SemanticModelIdentity,
     cache_key: str,
     cache_file_sha256: str,
-    native: np.ndarray,
+    native_array_sha256: str,
     producer_provenance: dict[str, Any],
 ) -> dict[str, Any]:
     return {
@@ -287,7 +289,7 @@ def _metadata(
         "cache_key": cache_key,
         "source_sha256": prepared.content_sha256,
         "native_size": list(prepared.original_size),
-        "native_array_sha256": array_sha256(native),
+        "native_array_sha256": native_array_sha256,
         "cache_file_sha256": cache_file_sha256,
         "cache_reuse_policy": CACHE_REUSE_POLICY,
         "producer_provenance": producer_provenance,
@@ -528,7 +530,7 @@ def _resize_nearest(
     import cv2
 
     return cv2.resize(
-        native.astype(np.uint8),
+        native.astype(np.uint8, copy=False),
         analysis_size,
         interpolation=cv2.INTER_NEAREST,
     )
@@ -542,7 +544,10 @@ def _atomic_save_png(array: np.ndarray, destination: Path) -> None:
     os.close(descriptor)
     temporary = Path(temporary_name)
     try:
-        Image.fromarray(array.astype(np.uint8)).save(temporary, optimize=True)
+        Image.fromarray(array.astype(np.uint8, copy=False)).save(
+            temporary,
+            optimize=True,
+        )
         os.replace(temporary, destination)
     finally:
         temporary.unlink(missing_ok=True)

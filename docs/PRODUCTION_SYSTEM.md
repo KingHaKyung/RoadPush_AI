@@ -294,6 +294,44 @@ wheel에는 runtime이 포함되므로 별도 CUDA Toolkit은 필수가 아니�
 process wall 2.503초였다. 이 값은 해당 검증 장비·cache-hit 사례의 smoke
 측정이며 보편적인 SLA 보장은 아니다.
 
+### 장기 실행 서비스와 성능 기준
+
+백엔드 worker는 요청마다 모델 의존성을 다시 만들지 않고
+`SurfacePassabilityAnalyzer`를 한 번 생성해 재사용한다.
+
+```python
+from surface_passability import SurfacePassabilityAnalyzer
+
+analyzer = SurfacePassabilityAnalyzer(requested_device="cuda")
+response = analyzer.analyze_photo(request)
+```
+
+semantic과 조건부 YOLO predict는 provider별 lock으로 직렬화된다. semantic
+후처리는 65개 class 전체를 원본 해상도 GPU tensor로 한 번에 확장하지 않는다.
+384×384 확률 map을 계산한 뒤 class 4개씩 원본 크기로 보간하고 running argmax를
+갱신한다. 동점은 기존과 같이 더 낮은 class ID를 선택한다. CPU와 GPU 각각에서
+최적화 전 class map hash를 160/160 유지했다.
+
+RTX 5070 Ti Laptop에서 같은 160장과 새 semantic cache를 사용한 cold run은
+다음과 같다. 조건부 YOLO는 production 정책대로 CPU에서 실행했다. 수치는 해당
+검증 장비의 비교값이며 SLA가 아니다.
+
+| 실행 | 최적화 전 | 최적화 후 | 변화 |
+|---|---:|---:|---:|
+| CPU 전체 wall | 847.18초 | 548.24초 | 35.3% 단축 |
+| CPU 평균 pipeline | 5.24초/장 | 3.39초/장 | 35.3% 단축 |
+| GPU 전체 wall | 674.69초 | 378.79초 | 43.9% 단축 |
+| GPU 평균 pipeline | 4.18초/장 | 2.34초/장 | 44.2% 단축 |
+| GPU peak VRAM | 9.30GB | 3.10GB | 66.7% 감소 |
+| GPU 평균 semantic | 0.546초 | 0.279초 | 49.0% 단축 |
+| GPU 평균 surface 후보 | 3.036초 | 1.866초 | 38.5% 단축 |
+| GPU 평균 Phase 7A·7B | 0.555초 | 0.143초 | 74.2% 단축 |
+
+속도 개선은 요청 범위 안의 exact memoization, robust boundary fit의 불필요한
+median 제거, 모델 asset hash 중복 읽기 제거, 장기 실행 dependency 재사용으로
+구성된다. cache key에는 입력 배열 shape·dtype·내용 hash와 모든 결과 결정 인자가
+포함된다. 요청이 끝나면 계산 cache도 함께 사라진다.
+
 모델 파일은 Git에 넣지 않는다.
 
 ```text
@@ -342,6 +380,7 @@ Git과 ZIP 모두에서 제외한다. 조직 저장소로 옮길 때는 allowlis
 - 요청·응답 schema validation
 - Git/ZIP allowlist 및 공식 Markdown 개수
 - canonical 40과 전체 160 parity
+- cold-cache CPU/GPU 전체 160 실행의 단계별 시간과 RAM/VRAM peak
 
 현재 frozen 전체 160장 normalized JSON SHA-256은
 `2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb`이며

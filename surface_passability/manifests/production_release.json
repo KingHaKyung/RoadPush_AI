@@ -4,10 +4,11 @@
   "package_version": "0.1.0",
   "python": ">=3.12,<3.13",
   "public_api": "surface_passability.analyze_photo",
+  "service_api": "surface_passability.SurfacePassabilityAnalyzer",
   "cli": "roadpush-surface-analyze",
   "response_schema_version": "surface_passability_response_v1",
   "passability_schema_version": "phase7_b_result_v2",
-  "production_python_files": 121,
+  "production_python_files": 122,
   "production_import_cycles": 0,
   "full160": {
     "sample_count": 160,
@@ -53,6 +54,20 @@
     "semantic_cache_hit": true,
     "semantic_inference_run": false,
     "generated_artifact_count": 0
+  },
+  "optimization_audit": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "sample_count": 160,
+    "cpu_cold_wall_seconds": 548.237,
+    "cpu_mean_pipeline_seconds": 3.389467,
+    "gpu_cold_wall_seconds": 378.788,
+    "gpu_mean_pipeline_seconds": 2.335263,
+    "gpu_peak_vram_mib": 3098.0,
+    "gpu_peak_process_rss_mib": 1981.79,
+    "semantic_inference_run_count": 160,
+    "semantic_cache_hit_count": 0,
+    "raw_same_device_mismatch_count": 0,
+    "normalized_cpu_gpu_phase7b_mismatch_count": 0
   },
   "thresholds_changed_by_refactor": false,
   "algorithm_changed_by_refactor": false

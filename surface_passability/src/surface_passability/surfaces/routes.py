@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from contextvars import ContextVar
 import heapq
+import hashlib
 import math
+from collections.abc import Iterator
 
 import cv2
 import numpy as np
@@ -38,6 +42,28 @@ from surface_passability.policies.surfaces import (
     ROUTE_START_SEARCH_HEIGHT_FRACTION,
     ROUTE_SURFACE_STABILIZATION_KERNEL_PX,
 )
+
+
+_ROUTE_CACHE: ContextVar[dict[tuple[object, ...], object] | None] = ContextVar(
+    "surface_passability_route_cache",
+    default=None,
+)
+
+
+@contextmanager
+def request_route_cache() -> Iterator[None]:
+    """Deduplicate exact route calculations within one analysis request."""
+
+    token = _ROUTE_CACHE.set({})
+    try:
+        yield
+    finally:
+        _ROUTE_CACHE.reset(token)
+
+
+def _array_digest(array: np.ndarray) -> str:
+    contiguous = np.ascontiguousarray(array)
+    return hashlib.sha256(memoryview(contiguous).cast("B")).hexdigest()
 
 
 def measure_route_path_angle(
@@ -222,6 +248,24 @@ def find_weighted_route_paths(
 ) -> tuple[list[list[tuple[int, int]]], list[float]]:
     """Find frozen clearance- and direction-weighted paths to reachable goals."""
 
+    cache = _ROUTE_CACHE.get()
+    cache_key: tuple[object, ...] | None = None
+    if cache is not None:
+        cache_key = (
+            "weighted",
+            component_mask.shape,
+            _array_digest(component_mask),
+            distance_map.shape,
+            str(distance_map.dtype),
+            _array_digest(distance_map),
+            start,
+            tuple(goals),
+        )
+        cached = cache.get(cache_key)
+        if cached is not None:
+            cached_paths, cached_totals = cached
+            return [list(path) for path in cached_paths], list(cached_totals)
+
     height, width = component_mask.shape
     costs = np.full((height, width), np.inf, np.float64)
     previous = np.full((height, width, 2), -1, np.int32)
@@ -291,6 +335,11 @@ def find_weighted_route_paths(
             path.reverse()
             paths.append(path)
             totals.append(float(costs[goal]))
+    if cache is not None and cache_key is not None:
+        cache[cache_key] = (
+            tuple(tuple(path) for path in paths),
+            tuple(totals),
+        )
     return paths, totals
 
 
@@ -404,6 +453,19 @@ def build_route_attempt(
 def solve_surface_route(repaired_surface_mask: np.ndarray) -> RouteAttempt:
     """Solve one surface route with the accepted missing-start fallback."""
 
+    cache = _ROUTE_CACHE.get()
+    cache_key: tuple[object, ...] | None = None
+    if cache is not None:
+        cache_key = (
+            "surface",
+            repaired_surface_mask.shape,
+            _array_digest(repaired_surface_mask),
+        )
+        cached = cache.get(cache_key)
+        if cached is not None:
+            assert isinstance(cached, RouteAttempt)
+            return cached
+
     clean_surface_mask = stabilize_route_surface(repaired_surface_mask)
     padded = np.pad(clean_surface_mask.astype(np.uint8), 1)
     distance_map = cv2.distanceTransform(
@@ -422,6 +484,8 @@ def solve_surface_route(repaired_surface_mask: np.ndarray) -> RouteAttempt:
             distance_map,
             ROUTE_START_FALLBACK_HEIGHT_FRACTION,
         )
+    if cache is not None and cache_key is not None:
+        cache[cache_key] = attempt
     return attempt
 
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
+from functools import lru_cache
 import os
 from pathlib import Path, PurePosixPath
 from time import perf_counter
@@ -92,3 +93,38 @@ def create_default_dependencies(
         class_names=class_names,
         artifact_locator=locator,
     )
+
+
+def get_default_dependencies(
+    *,
+    requested_device: str | None = None,
+    settings: RuntimeSettings | None = None,
+) -> PipelineDependencies:
+    """Return one verified, reusable dependency graph per worker/runtime."""
+
+    runtime = settings or get_settings()
+    device = (
+        os.environ.get("SURFACE_PASSABILITY_DEVICE", "cpu")
+        if requested_device is None
+        else requested_device
+    )
+    if not device.strip():
+        raise ValueError("requested inference device must not be empty")
+    return _cached_default_dependencies(runtime, device)
+
+
+@lru_cache(maxsize=8)
+def _cached_default_dependencies(
+    settings: RuntimeSettings,
+    requested_device: str,
+) -> PipelineDependencies:
+    return create_default_dependencies(
+        requested_device=requested_device,
+        settings=settings,
+    )
+
+
+def reset_default_dependencies_cache() -> None:
+    """Drop process-local runtime owners after an explicit reconfiguration."""
+
+    _cached_default_dependencies.cache_clear()
