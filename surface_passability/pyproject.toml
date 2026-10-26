@@ -3,17 +3,49 @@ requires = ["setuptools>=75", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "roadpush-ai"
+name = "surface-passability"
 version = "0.1.0"
-description = "RoadPush surface boundary and connected passability analysis"
+description = "RoadPush surface selection, boundary, and passability analysis"
 requires-python = ">=3.12,<3.13"
-readme = "README.md"
 license = { text = "Proprietary" }
+dependencies = [
+  "numpy==2.5.2",
+  "opencv-python==5.0.0.93",
+  "Pillow==12.3.0",
+]
+
+[project.optional-dependencies]
+inference-common = [
+  "PyYAML==6.0.3",
+  "psutil==7.2.2",
+  "requests==2.34.2",
+  "scipy==1.18.1",
+  "transformers==4.57.6",
+  "ultralytics==8.4.176",
+]
+cpu = [
+  "PyYAML==6.0.3",
+  "psutil==7.2.2",
+  "requests==2.34.2",
+  "scipy==1.18.1",
+  "torch==2.7.1",
+  "torchvision==0.22.1",
+  "transformers==4.57.6",
+  "ultralytics==8.4.176",
+]
+gpu = [
+  "PyYAML==6.0.3",
+  "psutil==7.2.2",
+  "requests==2.34.2",
+  "scipy==1.18.1",
+  "torch==2.7.1",
+  "torchvision==0.22.1",
+  "transformers==4.57.6",
+  "ultralytics==8.4.176",
+]
 
 [project.scripts]
-roadpush-phase6 = "roadpush_ai.phase6.runner:main"
-roadpush-phase7a = "roadpush_ai.phase7a.validation_policy:main"
-roadpush-phase7b = "roadpush_ai.phase7b.batch_runner:main"
+roadpush-surface-analyze = "surface_passability.cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

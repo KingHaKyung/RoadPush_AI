@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "distribution_policy": "weights are excluded from Git and require separate license review",
+  "model_root": "models/surface_passability",
+  "assets": [
+    {
+      "asset_id": "mask2former_mapillary_swin_large",
+      "runtime_role": "semantic_segmentation",
+      "relative_path": "semantic",
+      "upstream_model_id": "facebook/mask2former-swin-large-mapillary-vistas-semantic",
+      "class_count": 65,
+      "tree_sha256": "54eabd2be34b27ebc5c051ce6c7606ee1acc66ae045f0b48b859f687d90eabb1",
+      "weights_sha256": "72721afb6894c0b1239b9259c428996d9ca0aecbebc4efb4a2deaae0403e2ea7",
+      "config_sha256": "b40bec8d82de3b53ef967dce0496c37de520b69466f1a8d2f6c035700cbae9f3",
+      "preprocessor_sha256": "a76f8cc9f21f1e4152d8824338d9231d823c2426eedf06b77fa6790889206987",
+      "class_mapping_sha256": "a7d797bc565b7366659fe82f6d442d6cf004b6c4cada1cfe499064432ae68a93",
+      "license_action": "review the upstream model card and Mapillary Vistas terms before redistribution"
+    },
+    {
+      "asset_id": "yolo11n_seg_coco",
+      "runtime_role": "conditional_vehicle_instance_segmentation",
+      "relative_path": "yolo11n-seg.pt",
+      "sha256": "55ed65c56c91713d23e8402371c6c49a6fd84f257f7dce452e8d70e41dcbe152",
+      "license_action": "confirm the applicable Ultralytics license before redistribution"
+    }
+  ],
+  "obstacle_yolo_assets_owned_here": false
+}

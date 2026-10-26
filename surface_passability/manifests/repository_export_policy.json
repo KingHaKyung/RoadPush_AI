@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "destination": "KingHaKyung/RoadPush_AI",
+  "strategy": "allowlisted overlay preserving teammate-owned content",
+  "preserve_unchanged": ["obstacle_yolo/**"],
+  "include": [
+    ".gitignore",
+    "README.md",
+    "setup.bat",
+    "docs/PRODUCTION_SYSTEM.md",
+    "docs/DEVELOPMENT_HISTORY.md",
+    "surface_passability/pyproject.toml",
+    "surface_passability/requirements/*.txt",
+    "surface_passability/schemas/*.json",
+    "surface_passability/manifests/*.json",
+    "surface_passability/src/surface_passability/**/*.py"
+  ],
+  "exclude_from_git": [
+    "migration_work/**",
+    "experiments/**",
+    "models/**",
+    "data/**",
+    "outputs/**",
+    "artifacts/**",
+    "surface_passability/tests/**",
+    "src/roadpush_ai/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/.pytest_cache/**",
+    "**/*.egg-info/**"
+  ],
+  "team_zip_additions": [
+    "experiments/surface_passability/**",
+    "models/surface_passability/**"
+  ],
+  "team_zip_exclusions": [
+    "migration_work/**",
+    ".git/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/.pytest_cache/**",
+    "**/*.egg-info/**"
+  ],
+  "organization_push_requires_user_approval": true
+}

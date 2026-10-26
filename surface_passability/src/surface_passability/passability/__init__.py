@@ -1,0 +1,1 @@
+"""Passability measurement responsibilities."""

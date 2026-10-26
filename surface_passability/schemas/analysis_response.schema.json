@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roadpush.local/schemas/surface-passability-analysis-response-v1.json",
+  "title": "SurfacePassabilityAnalysisResponseV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "sample_id",
+    "image",
+    "semantic",
+    "surface_selection",
+    "boundary",
+    "passability",
+    "artifacts",
+    "stage_timings_s"
+  ],
+  "properties": {
+    "schema_version": { "const": "surface_passability_response_v1" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "sample_id": { "type": "string", "minLength": 1 },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_uri", "content_sha256", "original_size", "analysis_size",
+        "exif_orientation_normalized", "resize_filter"
+      ],
+      "properties": {
+        "source_uri": { "type": "string", "minLength": 1 },
+        "content_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "original_size": { "$ref": "#/$defs/image_size" },
+        "analysis_size": { "$ref": "#/$defs/image_size" },
+        "exif_orientation_normalized": { "type": "boolean" },
+        "resize_filter": { "type": "string", "minLength": 1 }
+      }
+    },
+    "semantic": {
+      "type": "object",
+      "required": [
+        "native_array_sha256", "analysis_array_sha256", "cache_key",
+        "cache_file_sha256", "cache_hit", "inference_run",
+        "cache_reuse_policy", "requested_device", "producer_provenance", "model"
+      ],
+      "properties": {
+        "native_array_sha256": { "$ref": "#/$defs/sha256" },
+        "analysis_array_sha256": { "$ref": "#/$defs/sha256" },
+        "cache_key": { "$ref": "#/$defs/sha256" },
+        "cache_file_sha256": { "$ref": "#/$defs/sha256" },
+        "cache_hit": { "type": "boolean" },
+        "inference_run": { "type": "boolean" },
+        "cache_reuse_policy": { "type": "string" },
+        "requested_device": { "type": "string" },
+        "producer_provenance": { "type": "object" },
+        "model": { "type": "object" }
+      }
+    },
+    "surface_selection": {
+      "type": "object",
+      "required": [
+        "input_profile", "state", "selected_surface", "fallback",
+        "score_margin", "reasons", "profile_metrics", "sidewalk", "road"
+      ],
+      "properties": {
+        "input_profile": { "enum": ["image_upload", "cctv"] },
+        "state": { "enum": ["sidewalk", "road", "uncertain_both", "uncertain_none"] },
+        "selected_surface": { "type": ["string", "null"] },
+        "fallback": { "type": ["string", "null"] },
+        "score_margin": { "type": "number" },
+        "reasons": { "type": "array", "items": { "type": "string" } },
+        "profile_metrics": { "type": "object" },
+        "sidewalk": { "type": "object" },
+        "road": { "type": "object" }
+      }
+    },
+    "boundary": {
+      "type": "object",
+      "required": [
+        "policy_id", "status", "selected_surface", "measurement_scope",
+        "measurement_authority", "result_authority", "human_review_required",
+        "authorized_row_range", "observed_rows", "generated_rows",
+        "structural_mask_sha256", "structural_area_px", "decision"
+      ],
+      "properties": {
+        "policy_id": { "type": "string" },
+        "status": { "enum": ["selected", "unchanged", "selected_partial", "ambiguous_hold", "failed"] },
+        "selected_surface": { "type": ["string", "null"] },
+        "measurement_scope": { "enum": ["full", "partial", "provisional", "none"] },
+        "measurement_authority": { "enum": ["allowed", "conditional_on_v6_reliability", "review_only", "denied"] },
+        "result_authority": { "enum": ["authoritative", "provisional_review", "none"] },
+        "human_review_required": { "type": "boolean" },
+        "authorized_row_range": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "array", "prefixItems": [{"type":"integer"},{"type":"integer"}], "minItems": 2, "maxItems": 2 }
+          ]
+        },
+        "observed_rows": { "type": "array", "items": { "type": "integer" } },
+        "generated_rows": { "type": "array", "items": { "type": "integer" } },
+        "structural_mask_sha256": { "$ref": "#/$defs/sha256" },
+        "structural_area_px": { "type": "integer", "minimum": 0 },
+        "decision": { "type": "object" }
+      }
+    },
+    "passability": {
+      "$ref": "https://roadpush.local/schemas/passability-result-v2.json"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["namespace", "artifact_id", "version", "relative_path", "sha256"],
+        "properties": {
+          "namespace": { "type": "string" },
+          "artifact_id": { "type": "string" },
+          "version": { "type": "string" },
+          "relative_path": { "type": "string" },
+          "sha256": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "stage_timings_s": {
+      "type": "object",
+      "additionalProperties": { "type": "number", "minimum": 0 }
+    }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "image_size": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer", "minimum": 1 },
+        { "type": "integer", "minimum": 1 }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    }
+  }
+}
