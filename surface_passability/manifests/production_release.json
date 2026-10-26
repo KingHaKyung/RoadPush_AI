@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "package": "surface-passability",
+  "package_version": "0.1.0",
+  "python": ">=3.12,<3.13",
+  "public_api": "surface_passability.analyze_photo",
+  "cli": "roadpush-surface-analyze",
+  "response_schema_version": "surface_passability_response_v1",
+  "passability_schema_version": "phase7_b_result_v2",
+  "production_python_files": 121,
+  "production_import_cycles": 0,
+  "full160": {
+    "sample_count": 160,
+    "mismatch_count": 0,
+    "normalized_json_sha256": "2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb",
+    "generated_artifact_count": 0
+  },
+  "canonical40": {
+    "sample_count": 40,
+    "mismatch_count": 0,
+    "normalized_json_sha256": "f3a4ca6681854160077878e51bd6e21898799d3d7c6cdeae1146045ab8824a62"
+  },
+  "final_visualization": {
+    "sample_count": 160,
+    "panel_count": 160,
+    "generated_file_count": 164,
+    "results_json_sha256": "85aabe66acbd5396e3dd35c645ed203aad7cc9474db7ff83c9a22556418ab8cd",
+    "review_html_sha256": "1ec2d6f2c6999bb63b7b32e2885a9eba6ab928fe41cade7d581085d7e8c2b3c8",
+    "review_manifest_sha256": "4b9f465fddf39bc138a538f728c04b2f8d3a1903626ed822797cc89a18fccb90",
+    "validation_json_sha256": "65305c44badd7963c6586311c2ba6f5eee7a32efa8be72c62d3bd9df41b82bf1",
+    "team_zip_path": "experiments/surface_passability/final_review/phase7_b_full160_v2_refactor_final",
+    "git_included": false
+  },
+  "active_test_suite": {
+    "collected": 1735,
+    "initial_full_run_passed": 1729,
+    "initial_full_run_failed": 5,
+    "initial_full_run_skipped": 1,
+    "harness_or_environment_rechecks_passed": 5,
+    "unresolved_failures": 0
+  },
+  "gpu_smoke": {
+    "device": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.7.1+cu128",
+    "torchvision": "0.22.1+cu128",
+    "cuda_runtime": "12.8",
+    "cuda_available": true,
+    "tensor_smoke_passed": true
+  },
+  "cache_hit_single_smoke": {
+    "pipeline_total_seconds": 0.9602934999857098,
+    "process_wall_seconds": 2.503,
+    "semantic_cache_hit": true,
+    "semantic_inference_run": false,
+    "generated_artifact_count": 0
+  },
+  "thresholds_changed_by_refactor": false,
+  "algorithm_changed_by_refactor": false
+}

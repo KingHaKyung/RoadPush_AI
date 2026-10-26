@@ -1,3 +1,0 @@
--r core.txt
-
-matplotlib==3.11.2

@@ -1,0 +1,2 @@
+"""Image decoding and preparation."""
+

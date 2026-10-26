@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roadpush.local/schemas/surface-passability-analysis-request-v1.json",
+  "title": "SurfacePassabilityAnalysisRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id",
+    "sample_id",
+    "image_uri",
+    "image_content_sha256",
+    "input_profile"
+  ],
+  "properties": {
+    "request_id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "sample_id": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "image_uri": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "image_content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$"
+    },
+    "input_profile": { "enum": ["image_upload", "cctv"] },
+    "surface_width_m": {
+      "type": ["number", "null"],
+      "exclusiveMinimum": 0
+    },
+    "agent_width_m": {
+      "type": ["number", "null"],
+      "exclusiveMinimum": 0
+    },
+    "safety_factor": {
+      "type": ["number", "null"],
+      "minimum": 1
+    },
+    "render_review": { "type": "boolean", "default": false }
+  }
+}
