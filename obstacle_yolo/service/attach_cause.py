@@ -39,7 +39,7 @@ from ultralytics import YOLO
 from predict import load_config   # 같은 service 폴더의 predict.py
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-TEAM_ROOT = r"C:\Furiosa\mini\RoadPush_AI"
+TEAM_ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 # 팀 기본 입력 (40장 canonical 세트). 7-B 결과는 docs/PHASE7B_PRODUCTION_LOGIC.md 9절의 canonical 파일
 PHASE6_DIR = r"outputs\surface_generalization\phase6_production_selector_canonical40_v1"
 MANIFEST = r"outputs\walkway_detection_ablation_v2\model_audit_40\audit_manifest.json"

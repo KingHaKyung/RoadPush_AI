@@ -1,12 +1,13 @@
-# RoadPush 장애물 탐지 — 서비스화 단계
+# RoadPush 장애물 탐지 — 독립 실행 호환 계층
 
-학습(`scripts/`)과 분리해, **새 사진을 넣으면 판정 결과가 나오는** 부분만 모은 폴더.
+학습(`scripts/`)과 분리한 독립 실행 adapter입니다. v4 production 서비스는 루트의
+`roadpush_ai` 패키지가 같은 detector를 메모리에서 직접 호출합니다.
 
 ```
 service/
   config.yaml   모델 경로·버전, 클래스별 임계값·처리 유형 (조정은 여기서만)
   predict.py    사진/폴더 → JSON + 확인용 이미지
-  attach_cause.py  팀 Phase 6 blocker 마스크 + 우리 탐지 → 막은 영역별 원인·처리 유형
+  attach_cause.py  파일 기반 과거 연결 방식 재현용
   outputs/      실행 결과 (실행할 때마다 날짜_시각 폴더가 생김)
 ```
 
@@ -31,8 +32,8 @@ service/
 | 2. 추론 스크립트 | 사진 → JSON (`predict.py`) | **완료** |
 | 3. 임계값 정하기 | 클래스별 conf. 학습 폴더의 `BoxF1_curve.png`, `BoxP_curve.png`, `BoxR_curve.png` 참고 | 다음 |
 | 4. 현장 사진 테스트 | AI Hub가 아닌 **직접 찍은 사진**으로 확인 (다른 카메라·지역·계절에서도 되는지) | 다음 |
-| 5. "통행을 막았나" 판정 | 팀 Phase 6 blocker 마스크와 겹치는 탐지만 원인으로 (`attach_cause.py`, 7-B와 sample_id로 결합) | **시험 중** |
-| 6. 배포 형태 | ONNX 변환 → 서버 API(FastAPI 등) 또는 단말 | 팀 결정 |
+| 5. "통행을 막았나" 판정 | 최상위 analyzer가 선택 surface blocker와 메모리에서 결합 | **완료** |
+| 6. 배포 형태 | Python 장기 실행 analyzer 및 순차 CLI | **완료** |
 | 7. 라이선스 | Ultralytics는 AGPL-3.0 → 상용/B2G 전 검토 (대안 RF-DETR, Apache 2.0) | 팀 결정 |
 
 ## 주의

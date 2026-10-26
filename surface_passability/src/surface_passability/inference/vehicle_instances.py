@@ -48,8 +48,13 @@ class VehicleModelProvider(Protocol):
 class UltralyticsVehicleModelProvider:
     """Lazy owner of the accepted local YOLO segmentation model."""
 
-    def __init__(self, weights_path: Path) -> None:
+    def __init__(
+        self,
+        weights_path: Path,
+        requested_device: str | None = None,
+    ) -> None:
         self.weights_path = weights_path.resolve()
+        self.requested_device = requested_device
         self._model: VehicleSegmentationModel | None = None
         self._synchronized_model: VehicleSegmentationModel | None = None
         self._model_lock = Lock()
@@ -62,7 +67,8 @@ class UltralyticsVehicleModelProvider:
 
                     self._model = YOLO(str(self.weights_path))
                     self._synchronized_model = _SynchronizedVehicleModel(
-                        self._model
+                        self._model,
+                        requested_device=self.requested_device,
                     )
         assert self._synchronized_model is not None
         return self._synchronized_model
@@ -71,8 +77,14 @@ class UltralyticsVehicleModelProvider:
 class _SynchronizedVehicleModel:
     """Serialize calls into one reusable Ultralytics model instance."""
 
-    def __init__(self, model: VehicleSegmentationModel) -> None:
+    def __init__(
+        self,
+        model: VehicleSegmentationModel,
+        *,
+        requested_device: str | None = None,
+    ) -> None:
         self._model = model
+        self._requested_device = requested_device
         self._predict_lock = Lock()
 
     @property
@@ -80,6 +92,11 @@ class _SynchronizedVehicleModel:
         return self._model.names
 
     def predict(self, image: np.ndarray, **kwargs: object) -> Sequence[Any]:
+        if self._requested_device is not None:
+            kwargs["device"] = (
+                "0" if self._requested_device == "cuda"
+                else self._requested_device
+            )
         with self._predict_lock:
             return self._model.predict(image, **kwargs)
 

@@ -1,9 +1,11 @@
 # Temporary migration planning document: Drive handoff only, never Git.
 /MIGRATION_AND_DISTRIBUTION_WORKFLOW.md
 /migration_work/
+/MIGRATION.md
 
 # Team-only evidence, raw inputs, renderers, and generated reviews.
 /experiments/
+/tests/
 
 # Drive-only exact replay runtime. These preserve historical scripts, the
 # licensed model weights, frozen inputs, and supporting artifacts without

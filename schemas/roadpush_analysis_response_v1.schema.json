@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "roadpush_analysis_response_v1.schema.json",
+  "title": "RoadPush integrated analysis response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "sample_id",
+    "status",
+    "surface",
+    "surface_obstacles",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": { "const": "roadpush_analysis_response_v1" },
+    "request_id": { "type": "string", "minLength": 1 },
+    "sample_id": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["complete", "partial"] },
+    "surface": { "type": "object" },
+    "surface_obstacles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "obstacle_count",
+        "types",
+        "obstacles",
+        "components",
+        "auto_routable",
+        "policy_id"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "attributed",
+            "partially_attributed",
+            "unclassified_only",
+            "no_blocker",
+            "no_selected_surface",
+            "failed",
+            "attribution_failed"
+          ]
+        },
+        "obstacle_count": { "type": "integer", "minimum": 0 },
+        "types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["A", "B", "C", "D"] }
+        },
+        "obstacles": { "type": "array", "items": { "type": "object" } },
+        "components": { "type": "array", "items": { "type": "object" } },
+        "auto_routable": { "type": "boolean" },
+        "policy_id": { "type": "string", "minLength": 1 },
+        "error": {
+          "type": "object",
+          "required": ["type", "message"],
+          "properties": {
+            "type": { "type": "string" },
+            "message": { "type": "string" }
+          }
+        }
+      }
+    },
+    "diagnostics": { "type": "object" }
+  }
+}

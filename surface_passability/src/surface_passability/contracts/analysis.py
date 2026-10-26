@@ -7,7 +7,9 @@ from dataclasses import dataclass
 import numpy as np
 
 from surface_passability.contracts.boundary import BoundaryAnalysisResult
+from surface_passability.contracts.image import PreparedImage
 from surface_passability.contracts.passability import PassabilityResult
+from surface_passability.contracts.response import AnalysisResponse
 from surface_passability.contracts.road import RoadContext
 from surface_passability.contracts.road_analysis import RoadCandidateComputation
 from surface_passability.contracts.sidewalk import SidewalkCandidateComputation
@@ -60,3 +62,21 @@ class SelectedSurfaceAnalysis:
     selection: SurfaceSelection
     boundary: BoundaryAnalysisResult
     passability: PassabilityResult
+
+
+@dataclass(frozen=True, slots=True)
+class SurfaceIntegrationEvidence:
+    """In-memory evidence exposed only to the top-level RoadPush pipeline."""
+
+    prepared_image: PreparedImage
+    selected_surface: str | None
+    blocker_mask: np.ndarray | None
+    structural_mask: np.ndarray | None
+
+
+@dataclass(frozen=True, slots=True)
+class SurfaceAnalysisBundle:
+    """Public response paired with non-serializable integration evidence."""
+
+    response: AnalysisResponse
+    evidence: SurfaceIntegrationEvidence

@@ -10,6 +10,14 @@
 | debris | movable_signage, carrier, chair, table | B 점유자 계도 |
 | micromobility | bicycle, scooter | A 운영사 수거 요청 |
 
+## v4 통합 상태
+
+production에서는 이 폴더를 직접 오케스트레이션하지 않고 루트의
+`roadpush_ai.RoadPushAnalyzer`가 장기 실행 `ObstacleDetector`를 재사용합니다.
+입력은 Surface와 동일하게 EXIF 보정된 원본 RGB 배열이며, 파일을 다시 열지 않습니다.
+전체 탐지는 진단 필드에 보존하고 선택 surface의 blocker와 접점한 탐지만
+`surface_obstacles`에 포함합니다. 이 폴더의 CLI는 독립 재현용 호환 adapter입니다.
+
 ## 폴더
 ```
 configs/class_map.yaml   원본 29개 라벨 → 4개 클래스 매핑
@@ -18,15 +26,15 @@ service/
   config.yaml            모델 경로·버전, 클래스별 임계값·처리 유형
   predict.py             사진/폴더 → 장애물 JSON + 확인용 이미지
   attach_cause.py        Phase 6 blocker 마스크 + 탐지 → 막은 영역별 원인·처리 유형 (7-B 결과와 sample_id로 결합)
-weights/                 (git 제외) 모델 가중치 — Drive에서 받아 넣기
 outputs/                 (git 제외) 변환 데이터·학습 결과
+../models/obstacle_detection/  production 모델 가중치
 ```
 
 ## 실행
 ```
 pip install -r requirements.txt          # torch는 requirements.txt 주석 참고
 python service\predict.py <사진 또는 폴더>
-python service\attach_cause.py --team-root <팀 파이프라인 폴더>
+python service\attach_cause.py --team-root <팀 파이프라인 폴더>  # legacy 재현용
 ```
 `attach_cause.py`는 팀 코드를 import하지 않고 Phase 6 출력 폴더(`results.json`, `artifacts/<id>/sidewalk/08_applied_blocker.png`)와
 7-B `results.json` 파일만 읽는다. 결과는 새 폴더에 저장하고 입력·모델 SHA-256을 기록한다.

@@ -14,14 +14,14 @@ goto invalid
 
 :cpu
 set "PROFILE=CPU"
-set "TORCH_REQ=surface_passability\requirements\torch-cpu.txt"
+set "TORCH_REQ=requirements\torch-cpu.txt"
 set "TORCH_INDEX=https://download.pytorch.org/whl/cpu"
 set "VENV=.venv-cpu"
 goto create_env
 
 :gpu
 set "PROFILE=GPU-CUDA-12.8"
-set "TORCH_REQ=surface_passability\requirements\torch-gpu-cu128.txt"
+set "TORCH_REQ=requirements\torch-gpu-cu128.txt"
 set "TORCH_INDEX=https://download.pytorch.org/whl/cu128"
 set "VENV=.venv-gpu-cu128"
 where nvidia-smi >nul 2>nul
@@ -67,12 +67,16 @@ set "PY=%VENV%\Scripts\python.exe"
 if errorlevel 1 exit /b 1
 "%PY%" -m pip install -r "%TORCH_REQ%" --index-url "%TORCH_INDEX%"
 if errorlevel 1 exit /b 1
-"%PY%" -m pip install -r "surface_passability\requirements\inference-common.txt"
+"%PY%" -m pip install -r "requirements\inference-common.txt"
 if errorlevel 1 exit /b 1
-"%PY%" -m pip install -e "surface_passability"
+"%PY%" -m pip install --no-deps -e "surface_passability"
+if errorlevel 1 exit /b 1
+"%PY%" -m pip install --no-deps -e "."
 if errorlevel 1 exit /b 1
 
-"%PY%" -c "import cv2,numpy,PIL,scipy,torch,torchvision,transformers,ultralytics,surface_passability; print('surface_passability=',surface_passability.__file__); print('torch=',torch.__version__); print('torchvision=',torchvision.__version__); print('cuda_runtime=',torch.version.cuda)"
+"%PY%" -c "import cv2,numpy,PIL,scipy,torch,torchvision,transformers,ultralytics,surface_passability,roadpush_ai; print('surface_passability=',surface_passability.__file__); print('roadpush_ai=',roadpush_ai.__file__); print('torch=',torch.__version__); print('torchvision=',torchvision.__version__); print('cuda_runtime=',torch.version.cuda)"
+if errorlevel 1 exit /b 1
+"%PY%" -m roadpush_ai.assets
 if errorlevel 1 exit /b 1
 
 if "%PROFILE%"=="CPU" goto verify_cpu

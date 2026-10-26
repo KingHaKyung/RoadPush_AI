@@ -8,7 +8,8 @@ model:
   # 주의: micromobility → vehicle 혼동이 .21 (④는 .12). A(수거)가 C(단속)로 잘못 넘어갈 수 있음
   # 상대 경로는 obstacle_yolo 폴더 기준. 가중치는 git에 올리지 않고 Drive로 전달한다
   #   (원본: outputs\runs\yolo11s_dataset_v2_full_os4\weights\best.pt 를 복사)
-  path: weights/obstacle_yolo11s_full_os4.pt
+  # Legacy mirror only. Production authority: /configs/obstacle_detection.yaml
+  path: ../models/obstacle_detection/obstacle_yolo11s_full_os4.pt
   sha256: b33b2d7361734d228363b7234ba61d005d411ff466254199f96cc5cd9d394286
   version: obstacle_v2_yolo11s_full_os4
   imgsz: 640          # 학습할 때와 같은 크기로 넣어야 성능이 그대로 나온다

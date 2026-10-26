@@ -1,0 +1,27 @@
+model:
+  relative_path: obstacle_detection/obstacle_yolo11s_full_os4.pt
+  sha256: b33b2d7361734d228363b7234ba61d005d411ff466254199f96cc5cd9d394286
+  version: obstacle_v2_yolo11s_full_os4
+  imgsz: 640
+
+classes:
+  vehicle:
+    name_ko: 주정차 차량
+    type: C
+    action: 단속 요청
+    conf: 0.25
+  construction:
+    name_ko: 공사시설
+    type: D
+    action: 도로점용 허가 확인
+    conf: 0.25
+  debris:
+    name_ko: 적치물
+    type: B
+    action: 점유자 계도
+    conf: 0.25
+  micromobility:
+    name_ko: 자전거·PM
+    type: A
+    action: 운영사 수거 요청
+    conf: 0.25

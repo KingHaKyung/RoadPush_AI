@@ -10,7 +10,9 @@ import numpy as np
 
 from surface_passability.contracts.analysis import (
     SurfaceCandidate,
+    SurfaceAnalysisBundle,
     SurfaceCandidates,
+    SurfaceIntegrationEvidence,
     SurfaceSelection,
     SelectedSurfaceAnalysis,
 )
@@ -391,6 +393,19 @@ def analyze_photo(
 ) -> AnalysisResponse:
     """Run the complete artifact-free production pipeline for one photo."""
 
+    return analyze_photo_with_evidence(
+        request,
+        dependencies=dependencies,
+    ).response
+
+
+def analyze_photo_with_evidence(
+    request: AnalysisRequest,
+    *,
+    dependencies: PipelineDependencies | None = None,
+) -> SurfaceAnalysisBundle:
+    """Run one analysis and retain the selected masks for integration."""
+
     dependencies = dependencies or get_default_dependencies()
     timings: dict[str, float] = {}
     started = _read_pipeline_clock(dependencies)
@@ -431,7 +446,7 @@ def analyze_photo(
     timings["boundary_and_passability"] = checkpoint - previous
     timings["total"] = checkpoint - started
 
-    return AnalysisResponse(
+    response = AnalysisResponse(
         request_id=request.request_id,
         sample_id=request.sample_id,
         image=prepared,
@@ -441,6 +456,27 @@ def analyze_photo(
         passability=selected.passability,
         artifacts=(),
         stage_timings_s=timings,
+    )
+    candidate = getattr(selected.selection, "candidate", None)
+    blocker_mask = None
+    structural_mask = None
+    if candidate is not None:
+        blocker_mask = candidate.blocker_mask.copy()
+        blocker_mask.setflags(write=False)
+        structural_mask = candidate.structural_mask.copy()
+        structural_mask.setflags(write=False)
+    return SurfaceAnalysisBundle(
+        response=response,
+        evidence=SurfaceIntegrationEvidence(
+            prepared_image=prepared,
+            selected_surface=getattr(
+                selected.selection.decision,
+                "selected_surface",
+                None,
+            ),
+            blocker_mask=blocker_mask,
+            structural_mask=structural_mask,
+        ),
     )
 
 

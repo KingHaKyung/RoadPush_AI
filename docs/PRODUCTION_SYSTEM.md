@@ -1,19 +1,21 @@
-# Surface Passability production 시스템
+# RoadPush AI production 시스템
 
-이 문서는 `surface_passability`의 현재 production 동작과 운영 계약을 설명한다.
-과거 실험 과정은 [개발 이력](DEVELOPMENT_HISTORY.md)에 분리한다. 이 모델은
-사진 속 장애물의 이름을 사용자에게 알려 주는 `obstacle_yolo`와 별개이며,
-통행 가능 폭을 계산하는 데 필요한 semantic 장애물 mask와 조건부 vehicle
-instance 처리는 `surface_passability`가 소유한다.
+이 문서는 `surface_passability`와 `obstacle_yolo`를 순차 실행하는 v4 production
+동작과 운영 계약을 설명한다. 과거 Surface 실험 과정은
+[개발 이력](DEVELOPMENT_HISTORY.md)에 분리한다. 두 모델은 최상위
+`RoadPushAnalyzer`가 연결하지만 역할과 결과 계약은 분리한다. 통행 가능 폭 계산에
+필요한 semantic 장애물 mask와 조건부 vehicle instance 처리는 계속
+`surface_passability`가 소유한다.
 
 ## 1. 공개 경계
 
-Python 공개 진입점은 `surface_passability.analyze_photo` 하나다.
+통합 Python 공개 진입점은 장기 실행 `roadpush_ai.RoadPushAnalyzer`다.
 
 ```python
-from surface_passability import AnalysisRequest, analyze_photo
+from roadpush_ai import AnalysisRequest, RoadPushAnalyzer
 
-response = analyze_photo(
+analyzer = RoadPushAnalyzer(requested_device="cuda")
+response = analyzer.analyze_photo(
     AnalysisRequest(
         request_id="req-001",
         sample_id="photo-001",
@@ -28,9 +30,11 @@ response = analyze_photo(
 payload = response.to_dict()
 ```
 
-입력과 출력은 각각 `AnalysisRequest`와 `AnalysisResponse` typed contract다.
-내부 mask 배열은 응답에 싣지 않고, provenance·상태·수치·hash만 직렬화한다.
-정식 JSON Schema는 `surface_passability/schemas/`에 있다.
+입력은 기존 `AnalysisRequest`를 유지하고 출력은 `RoadPushAnalysisResponse` typed
+contract다. 기존 `surface_passability.analyze_photo`도 Surface 단독 호환 진입점으로
+유지한다. 내부 mask 배열은 응답에 싣지 않고 provenance·상태·수치·hash만
+직렬화한다. 통합 JSON Schema는 `schemas/roadpush_analysis_response_v1.schema.json`에
+있다.
 
 ## 2. 요청 계약
 
@@ -60,13 +64,16 @@ AnalysisRequest
   -> SurfaceSelection
   -> BoundaryResult
   -> PassabilityResult
-  -> AnalysisResponse
+  -> AnalysisResponse + internal blocker evidence
+  -> obstacle_yolo detection on the same native RGB
+  -> selected-surface attribution
+  -> RoadPushAnalysisResponse
 ```
 
 모듈 의존 방향은 `contracts/config`에서 시작해 `imaging/inference`,
 `geometry/obstacles/surfaces`, `selection`, `boundary`, `passability`, 최종
-`pipeline/cli`로만 흐른다. production은 tests, experiments, 과거
-`roadpush_ai` 패키지를 import하지 않는다.
+`pipeline/cli`로만 흐른다. 최상위 `roadpush_ai`는 이 공개/내부 handoff와
+Obstacle detector를 조합한다. production은 tests와 experiments를 import하지 않는다.
 
 ## 4. 사진 준비
 
@@ -113,6 +120,20 @@ geometry로 변환한다. 차량처럼 semantic blob만으로 containment를 판
 YOLO는 항상 실행되지 않는다. surface와의 접촉·위치·geometry 조건이 필요할
 때만 호출하며, vehicle instance와 semantic mask의 결합 및 containment 예외는
 현재 production 정책 그대로 유지한다.
+
+### 6.1 사용자-facing Obstacle 탐지와 접점 판정
+
+Surface가 끝난 뒤 `obstacle_yolo11s_full_os4.pt`를 같은 EXIF 보정 원본 RGB에
+실행한다. 이 모델은 사진 전체의 `vehicle`, `construction`, `debris`,
+`micromobility` box와 처리 유형을 반환한다. 전체 결과는
+`diagnostics.all_detections`에 보존한다.
+
+서비스용 `surface_obstacles`는 선택된 Surface의 기존 blocker mask와 box가 겹치는
+탐지만 담는다. 접점 판정은 8-connectivity, 최소 component 30px,
+`component_in_box >= 0.30` 또는 `box_on_blocker >= 0.10`, box margin 3px 정책을
+유지한다. 같은 detection이 여러 component에 붙어도 최종 obstacle count는
+`detection_id` 기준으로 한 번만 센다. Obstacle box는 Surface blocker mask를
+변경하거나 폭 계산에 다시 투입하지 않는다.
 
 ## 7. Phase 1~5: surface 후보 생성
 
@@ -339,13 +360,16 @@ models/
   surface_passability/
     semantic/
     yolo11n-seg.pt
-  obstacle_yolo/          # 다른 모델 소유, 이 패키지는 참조하지 않음
+  obstacle_detection/
+    obstacle_yolo11s_full_os4.pt
 ```
 
 주요 환경 변수는 다음과 같다.
 
 | 변수 | 용도 |
 |---|---|
+| `ROADPUSH_ROOT` | 통합 runtime root |
+| `ROADPUSH_MODEL_ROOT` | 통합 `models` root |
 | `SURFACE_PASSABILITY_ROOT` | 기본 runtime root |
 | `SURFACE_PASSABILITY_DATA_ROOT` | 입력 data root |
 | `SURFACE_PASSABILITY_MODEL_ROOT` | `models/surface_passability` 대체 |
@@ -355,21 +379,21 @@ models/
 | `SURFACE_PASSABILITY_DEVICE` | semantic 장치 |
 | `ROADPUSH_YOLO_DEVICE` | 조건부 YOLO 장치 |
 
-CLI는 단일 파일과 batch 디렉터리를 지원하며 JSON을 임시 파일에 쓴 뒤
-원자적으로 교체한다.
+통합 CLI는 단일 파일과 batch 디렉터리를 지원하며 사진을 한 장씩 순차 처리하고
+JSON을 임시 파일에 쓴 뒤 원자적으로 교체한다.
 
 ```powershell
-roadpush-surface-analyze --image C:\inputs\one.jpg --output C:\results
-roadpush-surface-analyze --input-dir C:\inputs --output C:\results --device cpu
+roadpush-analyze --image C:\inputs\one.jpg --output C:\results --device cuda
+roadpush-analyze --input-dir C:\inputs --output C:\results --device cpu
 ```
 
 ## 14. 배포 경계와 운영 점검
 
 Git production에는 실행 코드, 이 문서 두 개, schema, manifest, requirements만
-포함한다. tests·baseline runner·review renderer·전체 160장 증거는
-`experiments/surface_passability/` 팀 ZIP에만 포함한다. `migration_work/`는
-Git과 ZIP 모두에서 제외한다. 조직 저장소로 옮길 때는 allowlist overlay를
-사용해 팀원 소유 `obstacle_yolo/**`를 변경하지 않는다.
+포함한다. v4 팀 재현 ZIP에는 v3 수준의 160장 원본 이미지, expected 기준값,
+입력 manifest와 검증된 모델 가중치를 추가한다. 새 통합 테스트 코드·실행 결과·cache,
+`migration_work/`는 Git과 ZIP 모두에서 제외한다. ZIP은 source 폴더 전체를 압축하지
+않고 허용 목록으로 생성한다.
 
 배포 전 다음을 확인한다.
 
@@ -381,6 +405,10 @@ Git과 ZIP 모두에서 제외한다. 조직 저장소로 옮길 때는 allowlis
 - Git/ZIP allowlist 및 공식 Markdown 개수
 - canonical 40과 전체 160 parity
 - cold-cache CPU/GPU 전체 160 실행의 단계별 시간과 RAM/VRAM peak
+
+v4 통합 검증은 동시성 1로 CPU/GPU 각각 160장을 처리했다. Surface mismatch는
+양쪽 모두 0이고, Obstacle count/class/metadata mismatch도 0이다. 평균 wall time은
+GPU 2.288초/장, CPU 3.383초/장이며 GPU peak reserved VRAM은 2,948MiB다.
 
 현재 frozen 전체 160장 normalized JSON SHA-256은
 `2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb`이며

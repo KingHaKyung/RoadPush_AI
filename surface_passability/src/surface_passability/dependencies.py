@@ -89,7 +89,10 @@ def create_default_dependencies(
             requested_device=device,
             model_identity=identity,
         ),
-        vehicle_model_provider=UltralyticsVehicleModelProvider(vehicle_weights),
+        vehicle_model_provider=UltralyticsVehicleModelProvider(
+            vehicle_weights,
+            requested_device=requested_device,
+        ),
         class_names=class_names,
         artifact_locator=locator,
     )

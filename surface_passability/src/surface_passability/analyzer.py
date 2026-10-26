@@ -5,6 +5,7 @@ from __future__ import annotations
 from surface_passability.config.settings import RuntimeSettings
 from surface_passability.contracts.request import AnalysisRequest
 from surface_passability.contracts.response import AnalysisResponse
+from surface_passability.contracts.analysis import SurfaceAnalysisBundle
 from surface_passability.dependencies import (
     PipelineDependencies,
     get_default_dependencies,
@@ -36,3 +37,16 @@ class SurfacePassabilityAnalyzer:
         from surface_passability.pipeline import analyze_photo
 
         return analyze_photo(request, dependencies=self.dependencies)
+
+    def analyze_photo_with_evidence(
+        self,
+        request: AnalysisRequest,
+    ) -> SurfaceAnalysisBundle:
+        """Return the public response plus in-memory integration evidence."""
+
+        from surface_passability.pipeline import analyze_photo_with_evidence
+
+        return analyze_photo_with_evidence(
+            request,
+            dependencies=self.dependencies,
+        )
