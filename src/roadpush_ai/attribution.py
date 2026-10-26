@@ -18,7 +18,7 @@ class AttributionPolicy:
     minimum_component_in_box: float = 0.30
     minimum_box_on_blocker: float = 0.10
     box_margin_pixels: int = 3
-    policy_id: str = "selected_surface_blocker_overlap_v1"
+    policy_id: str = "phase7b_occupancy_overlap_v2"
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,16 +54,16 @@ def native_box_to_analysis(
 
 
 def attribute_detections(
-    blocker_mask: np.ndarray,
+    occupancy_mask: np.ndarray,
     detections: tuple[ObstacleDetection, ...],
     *,
     original_size: tuple[int, int],
     analysis_size: tuple[int, int],
     policy: AttributionPolicy = AttributionPolicy(),
 ) -> AttributionResult:
-    """Attach boxes to connected components of the selected Surface blocker."""
+    """Attach boxes to final Phase 7B occupancy components."""
 
-    blocker = np.asarray(blocker_mask, dtype=bool)
+    blocker = np.asarray(occupancy_mask, dtype=bool)
     expected_shape = (analysis_size[1], analysis_size[0])
     if blocker.shape != expected_shape:
         raise ValueError(

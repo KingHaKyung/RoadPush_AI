@@ -18,6 +18,10 @@ from surface_passability.config.model_profiles import (
 from surface_passability.config.settings import RuntimeSettings, get_settings
 from surface_passability.contracts.image import PreparedImage
 from surface_passability.contracts.semantic import SemanticEvidence
+from surface_passability.passability.persisted_evidence import (
+    PersistedOccupancyEvidence,
+    PersistedOccupancyEvidenceIndex,
+)
 from surface_passability.policies.selection import SurfaceSelectionPolicy
 
 class SemanticEvidenceSource(Protocol):
@@ -28,6 +32,18 @@ class VehicleModelSource(Protocol):
     def get_model(self) -> object: ...
 
 
+class OccupancyEvidenceSource(Protocol):
+    def provide(
+        self,
+        *,
+        sample_id: str,
+        image_content_sha256: str,
+        selected_surface: str | None,
+        blocker_mask: object | None,
+        structural_mask: object | None,
+    ) -> PersistedOccupancyEvidence | None: ...
+
+
 @dataclass(frozen=True, slots=True)
 class PipelineDependencies:
     """All impure providers and configurable policies used by `analyze_photo`."""
@@ -35,6 +51,7 @@ class PipelineDependencies:
     semantic_provider: SemanticEvidenceSource
     vehicle_model_provider: VehicleModelSource
     class_names: Mapping[int | str, str]
+    occupancy_evidence_provider: OccupancyEvidenceSource | None = None
     artifact_locator: ArtifactLocator | None = None
     selection_policy: SurfaceSelectionPolicy = SurfaceSelectionPolicy()
     clock: Callable[[], float] = perf_counter
@@ -82,6 +99,13 @@ def create_default_dependencies(
         UltralyticsVehicleModelProvider,
     )
 
+    occupancy_evidence_root = runtime.model_root / "occupancy_evidence_v2"
+    occupancy_evidence_provider = (
+        PersistedOccupancyEvidenceIndex(occupancy_evidence_root)
+        if (occupancy_evidence_root / "manifest.json").is_file()
+        else None
+    )
+
     return PipelineDependencies(
         semantic_provider=SemanticEvidenceProvider(
             model_root=semantic_root,
@@ -94,6 +118,7 @@ def create_default_dependencies(
             requested_device=requested_device,
         ),
         class_names=class_names,
+        occupancy_evidence_provider=occupancy_evidence_provider,
         artifact_locator=locator,
     )
 

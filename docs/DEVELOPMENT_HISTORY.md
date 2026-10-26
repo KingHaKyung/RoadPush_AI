@@ -1,5 +1,13 @@
 # Surface Passability 개발 이력
 
+> v5 정정(2026-10-26): 아래 문서의 `2e78ac...` 기준과 live instance
+> completion을 일반 production 경로에 연결한 내용은 현재 승인 기준이 아니다.
+> v5는 pre-refactor authoritative normalized SHA-256 `3a0fb834...`를 복원했고,
+> 사용자-facing 장애물 접점은 초기 candidate blocker가 아니라 최종 Phase 7B
+> `occupancy_mask`를 사용한다. 현재 운영 계약과 결과는 `PRODUCTION_SYSTEM.md`,
+> `MIGRATION.md`, `experiments/full_regression/`을 우선한다. 아래 내용은 당시의
+> 개발 기록으로만 보존한다.
+
 이 문서는 현재 production 결과에 도달하기까지의 문제 정의, 실험, 실패와
 채택 결정을 기록한다. 현재 실행 계약은 [production 시스템](PRODUCTION_SYSTEM.md)을
 따른다. 상세 renderer, 전체 HTML·이미지, 기준 구현과 회귀 도구는 Git에서

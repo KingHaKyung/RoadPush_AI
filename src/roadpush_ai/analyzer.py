@@ -130,7 +130,7 @@ class RoadPushAnalyzer:
             detection.to_dict()
             for detection in obstacle_result.detections
         )
-        if evidence.selected_surface is None or evidence.blocker_mask is None:
+        if evidence.selected_surface is None:
             finished = perf_counter()
             return self._compose(
                 request=request,
@@ -146,9 +146,25 @@ class RoadPushAnalyzer:
                 after_obstacle=after_obstacle,
                 finished=finished,
             )
+        if evidence.phase7b_occupancy_mask is None:
+            finished = perf_counter()
+            return self._compose(
+                request=request,
+                bundle=surface_bundle,
+                obstacle_result=obstacle_result,
+                status="no_measurement_occupancy",
+                obstacles=(),
+                components=(),
+                all_detections=all_detections,
+                analysis_boxes={},
+                started=started,
+                after_surface=after_surface,
+                after_obstacle=after_obstacle,
+                finished=finished,
+            )
         try:
             attribution = attribute_detections(
-                evidence.blocker_mask,
+                evidence.phase7b_occupancy_mask,
                 obstacle_result.detections,
                 original_size=evidence.prepared_image.original_size,
                 analysis_size=evidence.prepared_image.analysis_size,

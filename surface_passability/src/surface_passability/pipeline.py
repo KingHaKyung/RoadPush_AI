@@ -44,6 +44,7 @@ from surface_passability.contracts.surfaces import (
 )
 from surface_passability.inference.vehicle_instances import VehicleModelProvider
 from surface_passability.dependencies import (
+    OccupancyEvidenceSource,
     PipelineDependencies,
     get_default_dependencies,
 )
@@ -319,6 +320,8 @@ def analyze_selected_surface(
     request: AnalysisRequest,
     selection: SurfaceSelection,
     semantic: SemanticEvidence,
+    *,
+    occupancy_evidence_provider: OccupancyEvidenceSource | None = None,
 ) -> SelectedSurfaceAnalysis:
     """Run boundary and passability once for the selected in-memory candidate."""
 
@@ -329,14 +332,12 @@ def analyze_selected_surface(
         blocker = np.zeros(shape, dtype=bool)
         silhouette = np.zeros(shape, dtype=bool)
         raw_structural = None
-        passability_instances: tuple[dict[str, object], ...] = ()
     else:
         shape = semantic.class_map.shape
         structural = candidate.structural_mask
         blocker = candidate.blocker_mask
         silhouette = candidate.obstacle_silhouette_mask
         raw_structural = candidate.raw_structural_mask
-        passability_instances = candidate.passability_instances
 
     with request_robust_fit_cache():
         boundary = analyze_surface_boundary(
@@ -366,10 +367,19 @@ def analyze_selected_surface(
         == "boundary_valid_but_blocker_suspect"
         or "blocker_coverage_suspect" in blocker_reuse.get("warnings", ())
     )
+    persisted_evidence = None
+    if occupancy_evidence_provider is not None and candidate is not None:
+        persisted_evidence = occupancy_evidence_provider.provide(
+            sample_id=request.sample_id,
+            image_content_sha256=request.image_content_sha256,
+            selected_surface=selection.decision.selected_surface,
+            blocker_mask=candidate.blocker_mask,
+            structural_mask=handoff.structural_mask,
+        )
     occupancy = build_measurement_occupancy(
         handoff,
         candidate.blocker_mask if candidate is not None else None,
-        passability_instances,
+        persisted_evidence=persisted_evidence,
         blocker_coverage_suspect=coverage_suspect,
     )
     passability = compose_passability_result(
@@ -440,7 +450,12 @@ def analyze_photo_with_evidence(
     checkpoint = _read_pipeline_clock(dependencies, previous=previous)
     timings["surface_selection"] = checkpoint - previous
 
-    selected = analyze_selected_surface(request, selection, semantic)
+    selected = analyze_selected_surface(
+        request,
+        selection,
+        semantic,
+        occupancy_evidence_provider=dependencies.occupancy_evidence_provider,
+    )
     previous = checkpoint
     checkpoint = _read_pipeline_clock(dependencies, previous=previous)
     timings["boundary_and_passability"] = checkpoint - previous
@@ -457,13 +472,13 @@ def analyze_photo_with_evidence(
         artifacts=(),
         stage_timings_s=timings,
     )
-    candidate = getattr(selected.selection, "candidate", None)
-    blocker_mask = None
-    structural_mask = None
-    if candidate is not None:
-        blocker_mask = candidate.blocker_mask.copy()
-        blocker_mask.setflags(write=False)
-        structural_mask = candidate.structural_mask.copy()
+    occupancy_mask = selected.passability.occupancy.occupancy_mask
+    if occupancy_mask is not None:
+        occupancy_mask = occupancy_mask.copy()
+        occupancy_mask.setflags(write=False)
+    structural_mask = selected.passability.handoff.structural_mask
+    if structural_mask is not None:
+        structural_mask = structural_mask.copy()
         structural_mask.setflags(write=False)
     return SurfaceAnalysisBundle(
         response=response,
@@ -474,8 +489,8 @@ def analyze_photo_with_evidence(
                 "selected_surface",
                 None,
             ),
-            blocker_mask=blocker_mask,
-            structural_mask=structural_mask,
+            phase7b_occupancy_mask=occupancy_mask,
+            phase7a_structural_mask=structural_mask,
         ),
     )
 

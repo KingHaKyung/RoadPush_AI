@@ -9,6 +9,11 @@ from pathlib import Path
 
 
 def main() -> int:
+    from surface_passability.config.model_profiles import (
+        tree_sha256,
+        verify_mask2former_mapillary_model,
+    )
+
     root = Path(os.environ.get("ROADPUSH_ROOT", Path(__file__).resolve().parents[2])).resolve()
     model_root = Path(os.environ.get("ROADPUSH_MODEL_ROOT", root / "models")).resolve()
     manifest = json.loads((root / "models" / "model_assets.json").read_text(encoding="utf-8"))
@@ -23,8 +28,15 @@ def main() -> int:
                 raise ValueError(
                     f"model hash mismatch for {asset['asset_id']}: {actual} != {expected}"
                 )
+        expected_tree = asset.get("tree_sha256")
+        if expected_tree:
+            actual_tree = tree_sha256(path)
+            if actual_tree != expected_tree:
+                raise ValueError(
+                    f"model tree hash mismatch for {asset['asset_id']}: "
+                    f"{actual_tree} != {expected_tree}"
+                )
         print(f"OK {asset['asset_id']}: {path}")
-    from surface_passability.config.model_profiles import verify_mask2former_mapillary_model
 
     verify_mask2former_mapillary_model(model_root / "surface_passability" / "semantic")
     print("All required model assets verified.")

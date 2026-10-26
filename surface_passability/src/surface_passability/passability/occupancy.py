@@ -11,6 +11,9 @@ from surface_passability.contracts.passability import (
     PassabilityBoundaryHandoff,
 )
 from surface_passability.io.hashing import hash_mask_after_uint8_cast
+from surface_passability.passability.persisted_evidence import (
+    PersistedOccupancyEvidence,
+)
 
 
 def complete_instance_occupancy(
@@ -63,6 +66,7 @@ def build_measurement_occupancy(
     surface_blocker_mask: np.ndarray | None,
     passability_instances: Sequence[Mapping[str, Any]] | None = None,
     *,
+    persisted_evidence: PersistedOccupancyEvidence | None = None,
     blocker_coverage_suspect: bool = False,
 ) -> MeasurementOccupancyResult:
     """Build verified measurement occupancy without reloading persisted files."""
@@ -131,6 +135,24 @@ def build_measurement_occupancy(
         working = completed
         records = tuple(completed_records)
         evidence_source = "existing_runtime_instance_ownership"
+    elif persisted_evidence is not None:
+        persisted_mask = np.asarray(
+            persisted_evidence.occupancy_mask,
+            dtype=bool,
+        )
+        if persisted_mask.shape != structural.shape:
+            raise ValueError(
+                f"{handoff.sample_id}: persisted occupancy shape "
+                f"{persisted_mask.shape} does not match structural shape "
+                f"{structural.shape}"
+            )
+        if int(persisted_mask.sum()) != persisted_evidence.occupancy_pixels:
+            raise AssertionError(
+                f"{handoff.sample_id}: persisted occupancy pixel count changed"
+            )
+        working |= persisted_mask & structural
+        records = persisted_evidence.instance_records
+        evidence_source = "persisted_runtime_v2_occupancy"
     elif blocker_coverage_suspect:
         blocker_hash_after = hash_mask_after_uint8_cast(blocker_source)
         structural_hash_after = hash_mask_after_uint8_cast(structural)

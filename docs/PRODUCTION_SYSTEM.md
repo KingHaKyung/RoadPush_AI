@@ -1,6 +1,6 @@
 # RoadPush AI production 시스템
 
-이 문서는 `surface_passability`와 `obstacle_yolo`를 순차 실행하는 v4 production
+이 문서는 `surface_passability`와 `obstacle_yolo`를 순차 실행하는 v5 production
 동작과 운영 계약을 설명한다. 과거 Surface 실험 과정은
 [개발 이력](DEVELOPMENT_HISTORY.md)에 분리한다. 두 모델은 최상위
 `RoadPushAnalyzer`가 연결하지만 역할과 결과 계약은 분리한다. 통행 가능 폭 계산에
@@ -64,7 +64,7 @@ AnalysisRequest
   -> SurfaceSelection
   -> BoundaryResult
   -> PassabilityResult
-  -> AnalysisResponse + internal blocker evidence
+  -> AnalysisResponse + final Phase 7B occupancy evidence
   -> obstacle_yolo detection on the same native RGB
   -> selected-surface attribution
   -> RoadPushAnalysisResponse
@@ -128,11 +128,13 @@ Surface가 끝난 뒤 `obstacle_yolo11s_full_os4.pt`를 같은 EXIF 보정 원�
 `micromobility` box와 처리 유형을 반환한다. 전체 결과는
 `diagnostics.all_detections`에 보존한다.
 
-서비스용 `surface_obstacles`는 선택된 Surface의 기존 blocker mask와 box가 겹치는
-탐지만 담는다. 접점 판정은 8-connectivity, 최소 component 30px,
+서비스용 `surface_obstacles`는 최종 Phase 7B 폭 계산에 실제 사용된
+`occupancy_mask`와 box가 겹치는 탐지만 담는다. 초기 candidate blocker를 접점
+기준으로 사용하지 않는다. 접점 판정은 8-connectivity, 최소 component 30px,
 `component_in_box >= 0.30` 또는 `box_on_blocker >= 0.10`, box margin 3px 정책을
 유지한다. 같은 detection이 여러 component에 붙어도 최종 obstacle count는
-`detection_id` 기준으로 한 번만 센다. Obstacle box는 Surface blocker mask를
+`detection_id` 기준으로 한 번만 센다. policy ID는
+`phase7b_occupancy_overlap_v2`다. Obstacle box는 Surface occupancy mask를
 변경하거나 폭 계산에 다시 투입하지 않는다.
 
 ## 7. Phase 1~5: surface 후보 생성
@@ -353,13 +355,14 @@ median 제거, 모델 asset hash 중복 읽기 제거, 장기 실행 dependency 
 구성된다. cache key에는 입력 배열 shape·dtype·내용 hash와 모든 결과 결정 인자가
 포함된다. 요청이 끝나면 계산 cache도 함께 사라진다.
 
-모델 파일은 Git에 넣지 않는다.
+모델과 authoritative compatibility evidence는 Git에 넣지 않는다.
 
 ```text
 models/
   surface_passability/
     semantic/
     yolo11n-seg.pt
+    occupancy_evidence_v2/
   obstacle_detection/
     obstacle_yolo11s_full_os4.pt
 ```
@@ -389,11 +392,11 @@ roadpush-analyze --input-dir C:\inputs --output C:\results --device cpu
 
 ## 14. 배포 경계와 운영 점검
 
-Git production에는 실행 코드, 이 문서 두 개, schema, manifest, requirements만
-포함한다. v4 팀 재현 ZIP에는 v3 수준의 160장 원본 이미지, expected 기준값,
-입력 manifest와 검증된 모델 가중치를 추가한다. 새 통합 테스트 코드·실행 결과·cache,
-`migration_work/`는 Git과 ZIP 모두에서 제외한다. ZIP은 source 폴더 전체를 압축하지
-않고 허용 목록으로 생성한다.
+Git production에는 실행 코드, 문서, schema, manifest, requirements만 포함한다.
+v5 asset ZIP은 Git checkout 위에 덮어 쓸 `models/`,
+`experiments/full_regression/`, 문서와 bundle manifest를 포함한다. 여기에는 Surface
+160장·CCTV 70장 원본, authoritative expected, 재현 스크립트와 최종 230장 결과가
+포함된다. semantic 실행 cache, Python cache와 임시 staging은 ZIP에서 제외한다.
 
 배포 전 다음을 확인한다.
 
@@ -406,12 +409,13 @@ Git production에는 실행 코드, 이 문서 두 개, schema, manifest, requir
 - canonical 40과 전체 160 parity
 - cold-cache CPU/GPU 전체 160 실행의 단계별 시간과 RAM/VRAM peak
 
-v4 통합 검증은 동시성 1로 CPU/GPU 각각 160장을 처리했다. Surface mismatch는
-양쪽 모두 0이고, Obstacle count/class/metadata mismatch도 0이다. 평균 wall time은
-GPU 2.288초/장, CPU 3.383초/장이며 GPU peak reserved VRAM은 2,948MiB다.
+v5 통합 검증은 동시성 1로 CPU/GPU 각각 160장을 새 cache에서 처리했다. Surface
+mismatch는 양쪽 모두 0이고, Obstacle count/class/metadata mismatch도 0이다.
+평균 integrated time은 GPU 3.619초/장, CPU 4.089초/장이며 GPU peak reserved
+VRAM은 2,948MiB다. 최종 230장 GPU review도 별도로 생성·검증했다.
 
 현재 frozen 전체 160장 normalized JSON SHA-256은
-`2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb`이며
+`3a0fb834e7f4c0ce8d526c5f022d0bac26cf68f1fb5cf82d6058a33cf580621c`이며
 mismatch는 0이다.
 
 ## 15. 알려진 제한과 보류사항

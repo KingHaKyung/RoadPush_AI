@@ -5,7 +5,7 @@ RoadPush의 사진 기반 보행로 분석 모델을 함께 관리하는 팀 저
 - `surface_passability/`: 사진에서 보도·도로 surface를 선택하고, 경계를
   결정한 뒤 상대·절대 통행 가능 폭을 계산하는 모델
 - `obstacle_yolo/`: 사진 전체의 장애물 종류와 위치를 탐지하는 모델
-- `src/roadpush_ai/`: 두 모델을 순차 실행하고 선택된 surface의 blocker와
+- `src/roadpush_ai/`: 두 모델을 순차 실행하고 최종 Phase 7B occupancy와
   접점하는 탐지만 서비스 결과로 조립하는 최상위 파이프라인
 
 통합 진입점은 한 사진을 한 번 읽어 Surface를 먼저 실행하고 Obstacle을 이어서
@@ -18,7 +18,7 @@ RoadPush의 사진 기반 보행로 분석 모델을 함께 관리하는 팀 저
 사진 검증·EXIF 보정
   -> surface_passability
   -> obstacle_yolo
-  -> 선택된 surface blocker와 obstacle box 접점 판정
+  -> 최종 Phase 7B occupancy와 obstacle box 접점 판정
   -> 통합 응답
 ```
 
@@ -141,29 +141,29 @@ artifact로 덮어쓰는 phase별 CLI와 renderer는 production에 포함하지 
 - `surface_passability/schemas/`: 요청·전체 응답·Phase 7B JSON Schema
 - `surface_passability/manifests/`: 모델 해시, release parity, Git/ZIP 경계
 
-상세 테스트, 기준 구현, 전체 review HTML·이미지와 재현 도구는 Git에서
-제외한 `experiments/surface_passability/` 팀 공유 번들에 둡니다.
+상세 테스트, 고정 입력·expected, 전체 review HTML·이미지와 재현 도구는 Git에서
+제외한 `experiments/full_regression/` 팀 공유 번들에 둡니다.
 `migration_work/`는 작업 재개용 로컬 기록이므로 Git과 팀 ZIP 모두에
 포함하지 않습니다.
 
-통합 테스트 코드·입력·결과·cache는 `experiments/integration/`에만 보관하며
-Git과 배포 ZIP에서 제외합니다. 배포 ZIP은 저장소 폴더 전체가 아니라 production
-허용 목록으로 생성합니다. 모델 가중치는 Git에서는 제외하고, 별도 모델 포함
-배포본이 필요할 때만 검증된 `models/`를 추가합니다.
+통합 테스트 코드·입력·최종 결과는 `experiments/full_regression/`에 보관합니다.
+실행 cache는 배포 ZIP에서 제외합니다. 배포 ZIP은 저장소 폴더 전체가 아니라
+`models/`, `experiments/full_regression/`, 문서와 manifest만 포함합니다.
 
 ## 현재 보장
 
 - 기존 160장 결과와 최종 production pipeline의 선택·경계·mask·폭 결과가
   mismatch 0
 - normalized JSON SHA-256:
-  `2e78ac33f529da695c1133dce424d2a6d80844113abef138b0d171958cddd9bb`
+  `3a0fb834e7f4c0ce8d526c5f022d0bac26cf68f1fb5cf82d6058a33cf580621c`
 - production에서 tests, experiments, 절대 `D:` 경로 import/reference 0
 - 리팩터링 중 알고리즘, 임계값, 결과 계약 변경 없음
-- RTX 5070 Ti Laptop 기준 전체 160장 GPU cold run은 최종값 160/160 일치,
-  통합 평균 2.29초/장, peak reserved VRAM 2.95GB로 검증
-- 같은 160장 CPU cold run도 Surface mismatch 0, 통합 평균 3.38초/장
+- RTX 5070 Ti Laptop 기준 v5 전체 160장 GPU cold run은 최종값 160/160 일치,
+  통합 평균 3.62초/장, peak reserved VRAM 2.95GB로 검증
+- 같은 160장 CPU cold run도 Surface mismatch 0, 통합 평균 4.09초/장
 - Obstacle count/class/metadata mismatch 0, 총 detection 291
-- 선택 surface 접점 장애물은 160장 합계 108개
+- 최종 Phase 7B occupancy 접점 장애물은 160장 합계 24개
+- 전체 230장(Surface 160장 + CCTV 70장) 최종 JSON·패널·HTML 검증 통과
 
 공식 조직 저장소 반영과 배포는 최종 사용자 승인 뒤에만 수행합니다.
 

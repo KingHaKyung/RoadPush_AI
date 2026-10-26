@@ -66,12 +66,12 @@ class SelectedSurfaceAnalysis:
 
 @dataclass(frozen=True, slots=True)
 class SurfaceIntegrationEvidence:
-    """In-memory evidence exposed only to the top-level RoadPush pipeline."""
+    """Final measurement masks exposed only to the top-level RoadPush pipeline."""
 
     prepared_image: PreparedImage
     selected_surface: str | None
-    blocker_mask: np.ndarray | None
-    structural_mask: np.ndarray | None
+    phase7b_occupancy_mask: np.ndarray | None
+    phase7a_structural_mask: np.ndarray | None
 
 
 @dataclass(frozen=True, slots=True)
