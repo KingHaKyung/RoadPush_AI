@@ -1,0 +1,42 @@
+{
+  "as_of_kst": "2026-10-28",
+  "final_model_accepted": false,
+  "default_development_model": {
+    "profile": "small_b_cu124",
+    "completed_epochs": 50,
+    "best_epoch": 35,
+    "checkpoint_sha256": "b5df46709a3a4f73c987cbbc12620673153a5597aa487b14c67f26df762a1fef"
+  },
+  "full_training_candidate": {
+    "profile": "team271_cu126",
+    "completed_epochs": 50,
+    "best_epoch": 42,
+    "best_dev_miou": 0.870477235018188,
+    "best_checkpoint_sha256": "6c91a196c2b0a6b102c203f44d5a8dcc85585d6147974793cc9daf68e29cf440",
+    "last_checkpoint_sha256": "79b3f579f83a35c555856cecb9f1db38ccd1b0bc110d12a6a7fa34b8d0c7266f",
+    "adopted_for_package_default": false,
+    "recovered_and_sha_verified": true,
+    "independent_test_evaluated": false
+  },
+  "dev113_research": {
+    "scenes": 113,
+    "boundary_candidate_scenes": 44,
+    "conditional_numeric_scenes": 6,
+    "confirmed_numeric_scenes": 0,
+    "camera_visible_boundary_scenes": 11,
+    "model_profile": "small_b_cu124",
+    "user_visual_review_complete": false,
+    "package_parity_scope": "six earlier real scenes; not 113-scene package parity"
+  },
+  "anchor_boundary_experiment": {
+    "scenes": 8,
+    "direction_anchors": 8,
+    "boundary_candidate_scenes": 3,
+    "boundary_candidates": 4,
+    "abstention_scenes": 5,
+    "confirmed_widths": 0,
+    "user_visual_review_complete": false,
+    "model": "full50_best42_roi20 checkpoint inferred with ROI60",
+    "width_integration_complete": false
+  }
+}

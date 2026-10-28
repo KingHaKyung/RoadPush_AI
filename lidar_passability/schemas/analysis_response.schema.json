@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roadpush.local/schemas/lidar-analysis-response-v1.json",
+  "title": "LidarAnalysisResponseV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "frame_id",
+    "processing_status",
+    "data_kind",
+    "input",
+    "versions",
+    "passability",
+    "confirmed_width_m",
+    "confirmed_ratio",
+    "result_authority",
+    "measurement_scope",
+    "production_eligible",
+    "human_review_required",
+    "auto_aggregation_allowed",
+    "conditional_runs",
+    "reasons",
+    "evidence",
+    "metadata",
+    "computation_key"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "roadpush.lidar.analysis/0.1-dev"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "frame_id": {
+      "type": "string"
+    },
+    "processing_status": {
+      "const": "completed"
+    },
+    "data_kind": {
+      "enum": [
+        "historical_actual_inference",
+        "actual_inference"
+      ]
+    },
+    "input": {
+      "type": "object"
+    },
+    "versions": {
+      "type": "object",
+      "required": [
+        "package",
+        "model",
+        "policy",
+        "boundary_profile"
+      ]
+    },
+    "passability": {
+      "const": "undetermined"
+    },
+    "confirmed_width_m": {
+      "type": "null"
+    },
+    "confirmed_ratio": {
+      "type": "null"
+    },
+    "result_authority": {
+      "enum": [
+        "provisional_review",
+        "none"
+      ]
+    },
+    "measurement_scope": {
+      "enum": [
+        "partial",
+        "none"
+      ]
+    },
+    "production_eligible": {
+      "const": false
+    },
+    "human_review_required": {
+      "const": true
+    },
+    "auto_aggregation_allowed": {
+      "const": false
+    },
+    "conditional_runs": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "reasons": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "computation_key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

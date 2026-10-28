@@ -1,0 +1,4 @@
+# Preserve byte-exact LiDAR source receipts across Windows/Linux checkouts.
+/.gitattributes text eol=lf
+/lidar_passability/** text eol=lf
+/docs/LIDAR*.md text eol=lf

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "destination": "KingHaKyung/RoadPush_AI",
+  "include": [
+    "lidar_passability/pyproject.toml",
+    "lidar_passability/README.md",
+    "lidar_passability/src/**/*.py",
+    "lidar_passability/src/**/*.json",
+    "lidar_passability/manifests/*.json",
+    "lidar_passability/schemas/*.json",
+    "docs/LIDAR*.md"
+  ],
+  "exclude_from_git": [
+    "lidar_passability/tests/**",
+    "experiments/**",
+    "models/**",
+    "data/**",
+    "**/__pycache__/**",
+    "**/*.egg-info/**"
+  ],
+  "test_distribution": "separate lidar-team-verification.zip; no raw data or weights",
+  "execution_profile": "separate LiDAR environment; root photo setup remains unchanged"
+}

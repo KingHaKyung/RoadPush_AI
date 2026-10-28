@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://roadpush.local/schemas/lidar-analysis-request-v1.json",
+  "title": "LidarAnalysisRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id",
+    "frame_id",
+    "pcd_path",
+    "prediction_path",
+    "report_path",
+    "model_version",
+    "expected_pcd_sha256",
+    "expected_prediction_sha256",
+    "expected_report_sha256",
+    "expected_checkpoint_sha256",
+    "source_receipt_sha256",
+    "axis_evidence"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "frame_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pcd_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prediction_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "report_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "expected_pcd_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "expected_prediction_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "expected_report_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "expected_checkpoint_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_receipt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "axis_evidence": {
+      "type": "object",
+      "required": [
+        "metric_z_up_verified",
+        "source"
+      ],
+      "properties": {
+        "metric_z_up_verified": {
+          "const": true
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "boundary_profile": {
+      "enum": [
+        "v5_review",
+        "low_barrier_review"
+      ]
+    },
+    "include_unknown_bounds": {
+      "type": "boolean"
+    },
+    "data_kind": {
+      "enum": [
+        "historical_actual_inference",
+        "actual_inference"
+      ]
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "roadpush.shared_fixed_front_roi.v1",
+  "forward_limit_m": 60.0,
+  "origin_lidar_xy_m": [
+    0.0,
+    0.0
+  ],
+  "forward_axis_lidar_xy": [
+    1.0,
+    0.0
+  ],
+  "camera_optical_axis_reference_xy": [
+    0.9992273543877467,
+    -0.039302598428915356
+  ],
+  "forward_interpretation": "fixed LiDAR +X as installed vehicle front; actual motion/trajectory not estimated",
+  "lidar_to_fixed_view": [
+    [
+      -0.0395036031468414,
+      -0.9992176682774098,
+      -0.0017806744215124782,
+      0.016169534338907075
+    ],
+    [
+      -0.11213565082361074,
+      0.006203396029441654,
+      -0.9936731593318612,
+      -0.21081427889020826
+    ],
+    [
+      0.9929078135778895,
+      -0.03905449045466428,
+      -0.11229237328775572,
+      0.010427061266735638
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "fixed_view_intrinsic": [
+    [
+      2155.703871,
+      0.0,
+      942.229476
+    ],
+    [
+      0.0,
+      2165.900519,
+      574.764416
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "fixed_view_distortion": [
+    -0.159335,
+    0.057244,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "fixed_view_size_px": [
+    1920,
+    1080
+  ],
+  "source": "one fixed dataset rig specification, shared by every PCD; no individual photos",
+  "rgb_image_required": false,
+  "per_frame_annotations_required": false,
+  "per_frame_camera_pose_estimation": false,
+  "visibility_note": "fixed geometric field of view only; does not certify lack of occlusion",
+  "length_semantics": "0 < horizontal forward-axis distance from LiDAR origin <= 60m; not 60m from each selected seed"
+}

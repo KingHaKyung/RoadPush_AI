@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roadpush-lidar-passability"
+version = "0.1.0.dev2"
+description = "Review-only LiDAR geometry and unsmoothed bottleneck analysis"
+readme = "README.md"
+requires-python = ">=3.12,<3.15"
+license = { text = "Proprietary" }
+dependencies = ["numpy>=2.4,<3", "scipy>=1.18,<2"]
+
+[project.scripts]
+roadpush-lidar = "lidar_passability.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lidar_passability = ["profiles/*.json", "manifests/*.json", "experimental/*.json"]

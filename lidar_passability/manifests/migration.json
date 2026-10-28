@@ -1,0 +1,150 @@
+{
+  "schema_version": "lidar_source_migration_v1",
+  "sources": [
+    {
+      "source": "output/posttrain_P1_inference_2026-10-26/prediction_contract.py",
+      "source_sha256": "e35ef344699abd3de0f1d62cfaaf7049c597616c93d42a6519f1ae9c89370678",
+      "target": "src/lidar_passability/prediction_contract.py",
+      "target_sha256": "57cea93aea8a2c386c5ad53f42e986a2219a316292afe58068e4fbecb8e8358c",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_P2_spatial_2026-10-26/p1_input_adapter.py",
+      "source_sha256": "415aad7610138907b06db00026304b1acad98decf3df9d50251876bac8b73108",
+      "target": "src/lidar_passability/p1_input_adapter.py",
+      "target_sha256": "7994e6eaa2d62b2b46e7db92eaa4b2fd10248c893006c4eeaf2985e16458b2c7",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_B_development_2026-10-26/spatial_indexed.py",
+      "source_sha256": "f2bae15a6dd5d78652f5c8d3683577567679ce9eb9a3924108adfe1b071f3d8d",
+      "target": "src/lidar_passability/spatial_indexed.py",
+      "target_sha256": "4e5971eec8b4387de8564280c79858dd607f11c4d154072046399737eedb3b03",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v3_2026-10-26/spatial_grounded.py",
+      "source_sha256": "dcdab48181a85b8334802b13c64220ed50d53bb44b0877dabc14eee0c3188ff1",
+      "target": "src/lidar_passability/spatial_grounded.py",
+      "target_sha256": "8149307ff022f7356c54920c18ff6c5d5348678ae31913281691a6f820776c06",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v3_2026-10-26/boundary_recovery.py",
+      "source_sha256": "4a69dd4479e5f88641bca7e370647994a29958787515480740043ab399f7dddc",
+      "target": "src/lidar_passability/boundary_recovery.py",
+      "target_sha256": "8586279c4a8ee1d4fbc6494098af619b5706d1da6d0f5747f07cd83640df6078",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v3_2026-10-26/geometry_first.py",
+      "source_sha256": "55ba1925017d69e40dd849d474f6dbe776f9101eb9cddf7a3c626524c6304f73",
+      "target": "src/lidar_passability/geometry_first.py",
+      "target_sha256": "4bfa404b307b1593ad90425d98f1d4c2bdcd838190381961df740f23078fe334",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v4_2026-10-26/curb_contacts.py",
+      "source_sha256": "0e1ff78cca469056ddb5cd4028e89a95a1d713ae5a3a0caf1f8ce9878c579176",
+      "target": "src/lidar_passability/curb_contacts.py",
+      "target_sha256": "134d2805d398019b6e25240cd01e8e9633e27a851f1d5e2ddbc68f614fa119c9",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v4_2026-10-26/measure_v5.py",
+      "source_sha256": "fa451db4e36eedb59c12af283e5ebd4326013870025c7d271ab409f57cf7fa55",
+      "target": "src/lidar_passability/measure_v5.py",
+      "target_sha256": "f295b393bfcbfd55d677260a372324ee5be01db894493961b39f337f6aaa1025",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_bottleneck_v2_2026-10-26/bottleneck.py",
+      "source_sha256": "de3391146ebc0aea7a552814910beab408f6356f12032d51e2f76a3e1d8d6a31",
+      "target": "src/lidar_passability/bottleneck.py",
+      "target_sha256": "83a29bb47abfa25610c09cf78aab5d1003890190e8006e348a7d490600480bdb",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_bottleneck_v2_2026-10-26/transport.py",
+      "source_sha256": "cd05ab2ead1e802493a2c247ebcca364b6d2c3c36e0e62a48d063c5cff0d114c",
+      "target": "src/lidar_passability/transport.py",
+      "target_sha256": "05110779a07c98c226d18ab3cae3bb898223bfb91cbc27f9092b8829053692c1",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_P3_width_2026-10-26/width_measure.py",
+      "source_sha256": "8b85bd69260675af088bea95ce6b73e6e3e204e911f2682c5018529199f01805",
+      "target": "src/lidar_passability/width_measure.py",
+      "target_sha256": "d1043da853b1fbd45caec538194113d6660dfb4831ee3bddc53c881ba03d44b4",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_P3_width_2026-10-26/p2_strip_adapter.py",
+      "source_sha256": "3a8aa4e8464f0e0cbd7c9dcdf7c5d62e78395075b14e0c5739a249806b9fcfc7",
+      "target": "src/lidar_passability/p2_strip_adapter.py",
+      "target_sha256": "1e2c168fc74e48fc4fe72ad38bdbff558f0b6e8c5ebed111f96af101475a8eae",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_P3_width_2026-10-26/p2_gate.py",
+      "source_sha256": "5ae3b0d8b13a53825e3abb0e2a5a40542f643fce5ad0917552495dfe48297ec6",
+      "target": "src/lidar_passability/p2_gate.py",
+      "target_sha256": "7d4f4635387852790a9c6a2c808e2a59224794de1f5ef7248cee981820d7087b",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v6_2026-10-26/barriers.py",
+      "source_sha256": "bd7c8ab4eaee75bcb4f1343483faecd761af2ad4393cc815d00b46ed2240ebe8",
+      "target": "src/lidar_passability/barriers.py",
+      "target_sha256": "c6674d067975e0060b434596a67b0fbf3fdaa759722575bc859876e9a1356994",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v6_2026-10-26/proposals.py",
+      "source_sha256": "3802ada7dfe885d28e380e6bae39ed76264fd7a4f5f511ff8341d2e87807bb57",
+      "target": "src/lidar_passability/proposals.py",
+      "target_sha256": "92bb11584b28d99a725cd5332b0e41fae7547e20898d616a7e58783c5d038ce0",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_boundary_v6_2026-10-26/interval_certificate.py",
+      "source_sha256": "907d59ee270d319574184e7855c2eb023cf3a7f96d6d4e0419b3130597ea88a5",
+      "target": "src/lidar_passability/interval_certificate.py",
+      "target_sha256": "3e26dbeb11a2e00a4884f90e04fe6b8a9a7556f529d2885afd883ed60da22e59",
+      "algorithm_ast_unchanged": true,
+      "algorithm_ast_comparison": "identical after docstring whitespace normalization"
+    },
+    {
+      "source": "output/posttrain_B_development_2026-10-26/process_B.py",
+      "source_sha256": "e63b3e11391be99d44312c111e1ca20af443c53c23210024a676472a4a8b3143",
+      "migration": "selected input/direction functions; no training or label matching"
+    },
+    {
+      "source": "output/posttrain_B_development_2026-10-26/batch153-kit/source/aihub8_contract.py",
+      "source_sha256": "7226cbf0077bfd4823fff70c3e692234415c20f1d09e1c1db491a42f86fc6824",
+      "migration": "selected input/direction functions; no training or label matching"
+    },
+    {
+      "source": "output/posttrain_B_development_2026-10-26/batch153-kit/source/roadpush.py",
+      "source_sha256": "349c8e8a5028e0e61d90cc669c1fb35bde4fb2660e06e6d7164216f518cee551",
+      "migration": "selected input/direction functions; no training or label matching"
+    }
+  ],
+  "algorithm_changes": false,
+  "scope": "source relocation and import decoupling; input annotation branch explicitly rejected"
+}

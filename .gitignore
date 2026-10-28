@@ -6,6 +6,7 @@
 # Team-only evidence, raw inputs, renderers, and generated reviews.
 /experiments/
 /tests/
+/lidar_passability/tests/
 
 # Drive-only exact replay runtime. These preserve historical scripts, the
 # licensed model weights, frozen inputs, and supporting artifacts without
@@ -23,6 +24,8 @@
 /Ultralytics/
 /surface_passability/build/
 /surface_passability/dist/
+/lidar_passability/build/
+/lidar_passability/dist/
 __pycache__/
 *.py[cod]
 .pytest_cache/

@@ -1,5 +1,9 @@
 # RoadPush AI
 
+LiDAR 개발용 분석은 독립 패키지 [`lidar_passability`](lidar_passability/README.md)와
+[연결 안내](docs/LIDAR_INTEGRATION.md)를 참고하세요. 사진 분석 API·설치환경과 분리되어 있으며,
+현재 조건부 경계·폭 검토 결과를 반환합니다.
+
 RoadPush의 사진 기반 보행로 분석 모델을 함께 관리하는 팀 저장소입니다.
 
 - `surface_passability/`: 사진에서 보도·도로 surface를 선택하고, 경계를

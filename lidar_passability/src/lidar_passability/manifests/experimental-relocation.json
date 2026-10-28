@@ -1,0 +1,51 @@
+{
+  "schema": "roadpush.experimental_relocation.v1",
+  "as_of_kst": "2026-10-28",
+  "source_snapshot": "user_boundary_design_2026-10-28",
+  "sources": [
+    {
+      "source": "bev_parallel_boundaries.py",
+      "source_sha256": "879232fb3e7db50492f36d8400958e933fe81df8bd79b5510bbe8643c87dc014",
+      "target": "src/lidar_passability/experimental/bev_parallel_boundaries.py",
+      "target_sha256": "68e68830de6cbe282f23ad90ce049918586e191f37ee9b7a1056d705f46067f0",
+      "relocation": "selected computation definitions; package-relative imports; no research CLI"
+    },
+    {
+      "source": "fixed_front_roi.py",
+      "source_sha256": "30eca2448979764a72a4075a8ab7e859d98e51555615ac04dd42c20945d30f4a",
+      "target": "src/lidar_passability/experimental/fixed_front_roi.py",
+      "target_sha256": "dea7e3eb06167fb6a42c1c7ccd90e1bb72e4449122ef8e03dd3c6c82020f3969",
+      "relocation": "selected computation definitions; package-relative imports; no research CLI"
+    },
+    {
+      "source": "auto_front_boundaries.py",
+      "source_sha256": "502dec0939921409163e2a40882c15d687e2cffe27e4208118a1783eed508bd6",
+      "target": "src/lidar_passability/experimental/auto_front_boundaries.py",
+      "target_sha256": "2cd78e781802c268a08cf489507583252d147284625ac7551f058f80bc94b255",
+      "relocation": "selected computation definitions; package-relative imports; no research CLI"
+    },
+    {
+      "source": "auto_front_width.py",
+      "source_sha256": "b2e1c5853e0703e124a7e3aba4273528a0d257a5ada3965ac306f557a46b49f6",
+      "target": "src/lidar_passability/experimental/auto_front_width.py",
+      "target_sha256": "b86b90422c739399eaa63c81e5d1f57c9b51edf14c541f814b9866f0a21e7e62",
+      "relocation": "selected computation definitions; package-relative imports; no research CLI"
+    },
+    {
+      "source": "anchor_direction_01070338.py",
+      "source_sha256": "e84334dc8555571d1b038462a64c8028f5e89e111ec82a41b18e03126cfb6f0e",
+      "target": "src/lidar_passability/experimental/anchor.py",
+      "target_sha256": "3e7330cc5fb74250666a3ada2d3d0c53fcb284a49d33589341a9448e50e72db0",
+      "relocation": "unchanged scoring/selection in explicit-input closure; model-contact diagnostics excluded from selection as before"
+    }
+  ],
+  "adaptations": [
+    "remove import-time file IO and research runners",
+    "explicit arrays/config; package-relative imports",
+    "retain original v4 abstention floor fallback for anchor parity",
+    "add input shape/class/raw-ID validation and non-production flags",
+    "Black25.1 formatting; code AST identical excluding docstring whitespace"
+  ],
+  "parity_scope": "8 stored front arrays: selected direction, source raw IDs, candidates, support points and abstention",
+  "correctness_verified": false
+}
